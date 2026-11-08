@@ -51,6 +51,8 @@ export interface VoiceAgent {
   onTour?: () => void;
   /** guided tour: have Nexus narrate this stop (only if a call is live) */
   tourNote?(line: string, label: string): void;
+  /** guided tour finished (voice): Nexus wraps up and asks the visitor's name if she doesn't know it */
+  tourEnd?(): void;
   /** while true, Nexus doesn't comment on what the visitor scrolls to */
   setQuiet?(quiet: boolean): void;
 }
@@ -117,6 +119,14 @@ export class NexusAgent implements VoiceAgent {
     this.lastCtxSent = performance.now();
     devlog.add('ctx', `tour note → ${label}`);
     this.session.sendClientContent({ turns: [{ role: 'user', parts: [{ text: `[tour] Now showing: ${label}. Say this naturally: "${line}"` }] }], turnComplete: true });
+  }
+
+  tourEnd() {
+    if (this.state.status !== 'live' || !this.session) return;
+    this.askedAt = performance.now();
+    this.lastCtxSent = performance.now();
+    devlog.add('ctx', 'tour finished');
+    this.session.sendClientContent({ turns: [{ role: 'user', parts: [{ text: '[tour-end] The guided tour just finished.' }] }], turnComplete: true });
   }
 
   getState = () => this.state;

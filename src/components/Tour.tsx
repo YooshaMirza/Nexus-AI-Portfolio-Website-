@@ -102,7 +102,7 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
         }
         if (finished) {
           if (step < TOUR.length - 1) setStep(step + 1);
-          else { setDone(true); devlog.add('sys', 'guided tour finished'); }
+          else { setDone(true); devlog.add('sys', 'guided tour finished'); if (mode === 'voice' && live()) agent.tourEnd?.(); }
           return;
         }
       }
