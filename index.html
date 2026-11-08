@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      // A phone visitor chose "desktop view": lay the page out at 1280px and scale it to fit (like "Request desktop site")
+      try { if (sessionStorage.getItem('nexus-force-desktop') === '1') var k = Math.min(1, Math.min(screen.width, screen.height) / 1280); document.querySelector('meta[name=viewport]').setAttribute('content', 'width=1280, initial-scale=' + k.toFixed(3) + ', minimum-scale=' + k.toFixed(3)); } catch (e) {}
+    </script>
+    <title>Mirza Yoosha Minhaj · AI engineer building voice agents</title>
+    <meta name="description" content="Mirza Yoosha Minhaj is an AI forward deployed engineer at Weya.ai, building real-time voice agents, LLM pipelines and computer vision. Talk to Nexus, his voice agent, right on the page." />
+    <meta name="theme-color" content="#E6EBEF" />
+    <meta property="og:title" content="Mirza Yoosha Minhaj · AI engineer building voice agents" />
+    <meta property="og:description" content="Talk to Nexus, a live voice agent that walks you through Yoosha's work as you scroll." />
+    <meta property="og:type" content="website" />
+    <script>
+      // theme before first paint: light by default, dark only if the visitor chose it
+      try { var t = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = t; if (t === 'dark') document.querySelector('meta[name=theme-color]').content = '#060A16'; } catch (e) {}
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Mirza Yoosha Minhaj, AI engineer. Email yoosha786@gmail.com</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

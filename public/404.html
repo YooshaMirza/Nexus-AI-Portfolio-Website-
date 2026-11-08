@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Page not found · Mirza Yoosha Minhaj</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+<script>
+  // Common guesses go straight to the right place: /projects → /#projects, /cv → resume viewer, /chat → chat
+  (function () {
+    var p = location.pathname.toLowerCase().replace(/\/+$/, '').split('/').pop() || '';
+    var to = {
+      expertise: '/#expertise', skills: '/#expertise',
+      work: '/#work', experience: '/#work', jobs: '/#work',
+      projects: '/#projects', project: '/#projects', portfolio: '/#projects',
+      opensource: '/#opensource', 'open-source': '/#opensource', oss: '/#opensource',
+      research: '/#research', papers: '/#research', publications: '/#research',
+      about: '/#about', education: '/#about',
+      contact: '/#contact', hire: '/#contact', email: '/#contact',
+      resume: '/?resume', cv: '/?resume',
+      chat: '/?chat', nexus: '/?chat', tour: '/?tour'
+    }[p.replace(/\.html?$/, '')];
+    if (to) location.replace(to);
+    try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+  })();
+</script>
+<style>
+@font-face{font-family:"Bricolage";src:url(/fonts/bricolage-grotesque-latin-standard-normal.woff2) format("woff2");font-weight:200 800;font-stretch:75% 100%;font-display:swap}
+@font-face{font-family:"Onest";src:url(/fonts/onest-latin-wght-normal.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{--fog:#E6EBEF;--paper:#F3F5F7;--text:#0F1B26;--slate:#56677A;--line:#CBD4DB;--cobalt:#2443F2;--surface:#fff;--dot:rgba(15,27,38,.07)}
+:root[data-theme="dark"]{--fog:#0A1118;--paper:#111B25;--text:#E8EEF3;--slate:#93A4B5;--line:#223140;--cobalt:#5D79FF;--surface:#131F2A;--dot:rgba(232,238,243,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(circle at 1px 1px,var(--dot) 1px,transparent 0) 0 0/26px 26px,var(--fog);color:var(--text);font-family:Onest,system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:grid;place-items:center;padding:24px 16px}
+main{max-width:620px;width:100%;text-align:center}
+.orb{width:120px;height:120px;margin:0 auto 34px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#9DB0FF,#2443F2 42%,#14248F);box-shadow:0 30px 60px -20px rgba(36,67,242,.55),inset -8px -10px 24px rgba(10,20,90,.35);animation:breathe 4.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1) translateY(0);border-radius:50%}50%{transform:scale(1.04) translateY(-4px);border-radius:47% 53% 50% 50%}}
+.code{font-size:13px;font-weight:600;letter-spacing:.14em;color:var(--cobalt)}
+h1{font-family:Bricolage,system-ui,sans-serif;font-weight:600;font-size:clamp(30px,6vw,46px);letter-spacing:-.035em;font-stretch:88%;line-height:1.08;margin:12px 0 14px;text-wrap:balance}
+p.say{color:var(--slate);font-size:17px;line-height:1.6;min-height:3.2em}
+p.say b{color:var(--text);font-weight:600;word-break:break-all}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+a.btn{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;padding:12px 20px;border-radius:999px;text-decoration:none;color:var(--text);background:var(--surface);border:1px solid var(--line);transition:border-color .2s,color .2s,translate .2s}
+a.btn:hover{border-color:var(--cobalt);color:var(--cobalt);translate:0 -1px}
+a.btn.primary{background:var(--text);color:var(--fog);border-color:var(--text)}
+a.btn.primary:hover{color:var(--fog);background:var(--cobalt);border-color:var(--cobalt)}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="orb" aria-hidden="true"></div>
+  <p class="code">404 · PAGE NOT FOUND</p>
+  <h1>This page doesn't exist.</h1>
+  <p class="say" id="say">Nexus here. I looked everywhere but couldn't find that page. I can still show you around Yoosha's work.</p>
+  <div class="row">
+    <a class="btn primary" href="/">Go to the homepage</a>
+    <a class="btn" href="/?chat">Ask Nexus</a>
+    <a class="btn" href="/?tour">Take the 60-second tour</a>
+  </div>
+</main>
+<script>
+  // name the missing path, then type the line out like a live caption
+  (function () {
+    var el = document.getElementById('say');
+    var path = decodeURIComponent(location.pathname).slice(0, 60);
+    var parts = ['Nexus here. I looked everywhere but couldn’t find ', path, '. I can still show you around Yoosha’s work.'];
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { render(Infinity); return; }
+    var total = parts.join('').length, n = 0;
+    el.textContent = '';
+    var t = setInterval(function () { n += 2; render(n); if (n >= total) clearInterval(t); }, 28);
+    function render(k) {
+      el.textContent = '';
+      var used = 0;
+      parts.forEach(function (s, i) {
+        var piece = s.slice(0, Math.max(0, k - used)); used += s.length;
+        if (!piece) return;
+        if (i === 1) { var b = document.createElement('b'); b.textContent = piece; el.appendChild(b); }
+        else el.appendChild(document.createTextNode(piece));
+      });
+    }
+  })();
+</script>
+</body>
+</html>

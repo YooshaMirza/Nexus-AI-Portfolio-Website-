@@ -1,0 +1,14 @@
+{
+  "name": "Mirza Yoosha Minhaj",
+  "short_name": "Yoosha",
+  "description": "AI forward deployed engineer. Talk to Nexus, his live voice agent.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#E6EBEF",
+  "theme_color": "#2443F2",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

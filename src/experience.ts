@@ -1,0 +1,32 @@
+/**
+ * experience.ts — turns the human date ranges in content.ts ("Nov 2025 – Sep 2026",
+ * "Jun – Aug 2024", "Dec 2024", "Sep 2026 – now") into calendar months, so the page can
+ * count experience honestly: overlapping roles share months instead of being added twice.
+ */
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+/** month index since year 0, e.g. Jan 2025 → 2025*12 + 0 */
+const idx = (m: string, y: number) => y * 12 + MONTHS.indexOf(m.slice(0, 3).toLowerCase());
+
+export function monthsOf(when: string, now = new Date()): number[] {
+  const parts = when.split(/\s*[–-]\s*/).map((p) => p.trim());
+  const nowIdx = now.getFullYear() * 12 + now.getMonth();
+  const parse = (p: string, fallbackYear?: number) => {
+    if (/now|present/i.test(p)) return nowIdx;
+    const [m, y] = p.split(/\s+/);
+    return idx(m, y ? Number(y) : (fallbackYear as number));
+  };
+  const endYear = Number((parts[1] ?? parts[0]).match(/\d{4}/)?.[0] ?? now.getFullYear());
+  const start = parse(parts[0], endYear);
+  const end = parts[1] ? parse(parts[1], endYear) : start;
+  const out: number[] = [];
+  for (let i = start; i <= end; i++) out.push(i);
+  return out;
+}
+
+/** "1 yr 8 mos", "11 months" */
+export function formatMonths(n: number): string {
+  const y = Math.floor(n / 12), m = n % 12;
+  if (!y) return `${m} month${m === 1 ? '' : 's'}`;
+  return `${y} yr${y > 1 ? 's' : ''}${m ? ` ${m} mo${m > 1 ? 's' : ''}` : ''}`;
+}
