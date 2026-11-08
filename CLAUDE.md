@@ -154,3 +154,16 @@ client code.
 ## Next step
 Yoosha will test locally and send a list of changes. Make them in this codebase, keeping the
 design decisions above unless he says otherwise.
+
+## Update 8 Nov 2026 (evening)
+- **Entry screen** (`Entry.tsx`): "Enter website" welcome once per tab (sessionStorage `nexus-entered`); its tap is the browser gesture for sound, so Nexus greets at once. "Enter without voice" = Nexus stays off (tap-anywhere disabled). ONLY a click gets you in: scrolling and Esc do nothing (he wants every visitor to meet Nexus first). Skipped for /?chat /?tour /?resume and ?demo; `?entry` forces it. The real blob sits in `#blob-entry` while open (Stage), highlights from content.ts orbit it, Nexus's silent caption line lights up, the blob ripples when the cursor is on the button (`entry-hot`).
+- **Blob follows the mouse everywhere** (Stage → `VoiceBlob.look`): turns toward the cursor, leans a little, ripples when the cursor comes close. Desktop only.
+- **Experience** is computed at runtime from job dates ("Sep 2026 – now"), so it grows by itself every month (page, tour, Nexus voice + chat). Never hardcode it.
+- **Visitor counter** (`server/visits.ts`, `/api/visits`, `VisitCount.tsx` in the footer): unique browsers since launch day 2026-11-08 (VISITS_SINCE), deduped per hashed IP per day, Netlify Blobs store `nexus-visits`. Hidden in production until 100 (he doesn't want small numbers shown).
+- **Contact**: "usually replies within a day" REMOVED (never confirmed); replaced by his local India time (amber "reply in the morning" 23:00–07:00). Copy-email button. One main action "Email Yoosha", WhatsApp + Upwork secondary, "Ask Nexus" as a small line. Availability line pending his exact wording.
+- **Tour runs by itself like a demo**: NO Next button. Manual page scroll only holds it; it carries on ~3 s after scrolling stops (scrolling inside the tour card/chat/dock is ignored). Voice waits for Nexus to start AND finish each line (visitor talking only delays). Chat types each stop word by word with an evidence card.
+- **Netlify badge** overlaps the dock on phones. It can't be removed on this site (free plan + Bolt origin). Fix = a fresh Netlify project imported from GitHub, then free/rename the `yoosha-portfolio` name. Pending Yoosha.
+- **Tour v2** (`src/tour.ts`, 10 stops, his order): intro (full range, NOT only voice) → expertise → Weya → Neurabit → earlier roles in one line (Sarvm, IIT Indore, BIT Sindri, smaller internships) → projects section ("some of his projects", live demos + code) → open source ("one of his contributions", never "his only") → paper 1 (published) → paper 2 (in press) → hire him (Upwork / email / WhatsApp). Each stop has `line` (English, tour card) and `say` (Hinglish, spoken by Nexus). The item being discussed gets a cobalt box (`.tour-focus`) for the whole stop.
+- **Nexus speaks Hinglish by default** (English only if the visitor needs it), natural fillers, gender-neutral Hindi about itself (Kore is a female voice). Greeting is Hinglish.
+- **Pronunciation** (liveConfig PRONUNCIATION): Yoosha = यूशा "YOO-shaa"; Neurabit = न्यूराबिट "NYOO-ruh-bit"; Sarvm.ai = "Sarvam dot A I".
+- **Who he is**: always present him as a full-stack AI engineer (LLMs, RAG, MCP/agents, CV, DL/ML, voice, front end + back end). He was unhappy being framed as only a voice-agent engineer.

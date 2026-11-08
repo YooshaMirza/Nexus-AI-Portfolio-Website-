@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
 import { devlog } from '../agent/devlog';
 import ConsoleLine from './ConsoleChip';
 import { isOutOfService } from '../serviceText';
@@ -6,22 +6,23 @@ import { person } from '../content';
 import { evidenceFor, labelFor, linkedIds, type Evidence } from './evidence';
 
 /** shown: items Nexus moved the page to while answering (they get cards too) */
-type Msg = { role: 'user' | 'model'; text: string; error?: boolean; shown?: string[] };
+type Msg = { role: 'user' | 'model'; text: string; error?: boolean; shown?: string[]; typed?: boolean };
 const STORE = 'nexus-chat';
 const SUGGESTIONS = ['What does Yoosha do at Weya?', 'Show me his best project', 'Is he open to freelance work?', 'हिंदी में बताओ, उसका experience क्या है?'];
 const TOUR_CHIP = 'Take the 60-second tour';
 const DEFAULT_NEXT = [TOUR_CHIP, 'How can I hire him?', 'What is his strongest skill?'];
 
 /** The guided tour posts its stops into the chat through this tiny bus (no API call needed). */
-const tourListeners = new Set<(text: string) => void>();
-export const chatBus = { post: (text: string) => tourListeners.forEach((f) => f(text)) };
+const tourListeners = new Set<(text: string, target?: string) => void>();
+/** The tour posts its stops here; `target` = the page item being shown (gets an evidence card). */
+export const chatBus = { post: (text: string, target?: string) => tourListeners.forEach((f) => f(text, target)) };
 
 const load = (): Msg[] => { try { return JSON.parse(sessionStorage.getItem(STORE) || '[]'); } catch { return []; } };
 const save = (m: Msg[]) => { try { sessionStorage.setItem(STORE, JSON.stringify(m.slice(-30))); } catch { /* private mode */ } };
 
 /** Plain text as word spans, so each new word can light up as it streams in (keys stay stable while text grows). */
 function words(text: string, key: string): ReactNode[] {
-  return text.split(/(\s+)/).map((w, i) => (w.trim() ? <span key={`${key}.${i}`} className="w">{w}</span> : w));
+  return text.split(/(\s+)/).map((w, i) => (w.trim() ? <span key={`${key}.${i}`} className="w" style={{ '--i': i } as CSSProperties}>{w}</span> : w));
 }
 
 /** Tiny safe markdown: paragraphs, "- " / "* " bullets, **bold**, [label](url-or-item-id). No HTML is ever injected. */
@@ -98,7 +99,8 @@ export default function Chat({ open, onClose, onShow, onTheme, getPage, onVoice,
 
   useEffect(() => { save(msgs); }, [msgs]);
   useEffect(() => {
-    const onTour = (text: string) => setMsgs((cur) => [...cur, { role: 'model', text }]);
+    // tour stops are stored whole at once (nothing can cut them off) and typed out by CSS, word by word
+    const onTour = (text: string, target?: string) => setMsgs((cur) => [...cur.map((m) => (m.typed ? { ...m, typed: false } : m)), { role: 'model', text, typed: true, shown: target && evidenceFor(target) ? [target] : undefined }]);
     tourListeners.add(onTour);
     return () => { tourListeners.delete(onTour); };
   }, []);
@@ -202,7 +204,7 @@ export default function Chat({ open, onClose, onShow, onTheme, getPage, onVoice,
             ? [...new Set([...(cards[0]?.follow ?? []), ...DEFAULT_NEXT])].filter((q) => !asked.has(q)).slice(0, 3)
             : [];
           return (
-            <div key={i} className={`msg model${m.error ? (isOutOfService(m.text) ? ' notice' : ' error') : ''}${live ? ' live' : ''}`}>
+            <div key={i} className={`msg model${m.error ? (isOutOfService(m.text) ? ' notice' : ' error') : ''}${live ? ' live' : ''}${m.typed && isLast ? ' typed' : ''}`}>
               <Markdown text={m.text} onJump={jump} />
               {cards.length > 0 && <div className="ev">{cards.map((e) => <Card key={e.id} e={e} onJump={jump} />)}</div>}
               {next.length > 0 && <div className="chat-next">{next.map((q) => <button key={q} type="button" onClick={() => pick(q)}>{q}</button>)}</div>}

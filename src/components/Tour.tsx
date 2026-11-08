@@ -8,11 +8,15 @@ export type TourMode = 'silent' | 'voice' | 'chat';
 
 const MIN_MS = 5200;         // shortest stop
 const MAX_VOICE_MS = 16000;  // never wait longer than this for Nexus to finish a line
+const NO_START_MS = 7000;    // Nexus never started this line (it may choose silence): move on
+const GAP_MS = 650;          // a breath between Nexus finishing and the next stop
+const HOLD_MS = 3200;        // after a manual scroll, carry on by itself after this much stillness
 
 /**
- * The 60-second guided tour. Works silently with captions; if a voice call is live,
- * Nexus narrates each stop and the tour waits for it to finish speaking.
- * Scrolling by hand pauses it. Esc exits.
+ * The 60-second guided tour. It runs by itself like a person giving a demo: no "Next".
+ * Silent: each stop lasts a reading time. Voice: waits for Nexus to start and finish its line.
+ * Chat: each stop is typed into the chat. Scrolling the page by hand holds the tour, and it
+ * carries on by itself ~3 s after the scrolling stops (only the Pause button stops it for good). Esc exits.
  */
 export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice, onChat }: {
   open: boolean;
@@ -32,6 +36,10 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
   const pausedAt = useRef(0);
   const ourScrollUntil = useRef(0);
   const narrated = useRef(-1);
+  const [held, setHeld] = useState(false);     // manual scroll: resumes by itself
+  const lastManual = useRef(0);
+  const spoke = useRef(false);                // Nexus has started this stop's line
+  const quietSince = useRef(0);
 
   const live = () => agent.getState().status === 'live';
 
@@ -52,12 +60,19 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
     ourScrollUntil.current = performance.now() + 1400;
     show(stop.target);
     stepStart.current = performance.now();
+    spoke.current = false; quietSince.current = 0;
     setProgress(0);
     if (narrated.current !== step) {
-      if (mode === 'voice' && live()) { narrated.current = step; agent.tourNote?.(stop.line, stop.label); }
-      else if (mode === 'chat') { narrated.current = step; chatBus.post(`**${stop.label}** · ${stop.line}`); }
+      if (mode === 'voice' && live()) { narrated.current = step; agent.tourNote?.(stop.say, stop.label); }
+      else if (mode === 'chat') { narrated.current = step; chatBus.post(`**${stop.label}** · ${stop.line}`, stop.target); }
     }
     devlog.add('tool', `tour stop ${step + 1}/${TOUR.length} → ${stop.target}`);
+    // a box around the item being talked about (a job, the open source card, each paper), for the whole stop
+    const el = document.querySelector<HTMLElement>(`[data-ctx="${stop.target}"]`);
+    const boxed = el && el.tagName !== 'SECTION' ? el : null;
+    // a data attribute, not a class: React rewrites className when the card's "viewing" state changes
+    boxed?.setAttribute('data-tour-focus', '');
+    return () => { boxed?.removeAttribute('data-tour-focus'); };
   }, [open, step, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // timer: silent stops last a reading-time; narrated stops wait for Nexus to finish
@@ -65,14 +80,26 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
     if (!open || done) return;
     let raf = 0;
     const tick = () => {
-      if (!paused) {
-        const el = performance.now() - stepStart.current;
+      if (!paused && !held) {
+        const now = performance.now();
+        const el = now - stepStart.current;
         const words = TOUR[step].line.split(/\s+/).length;
         const silentDur = Math.max(MIN_MS, words * 300);
         const voice = mode === 'voice' && live();
-        const dur = voice ? MAX_VOICE_MS : silentDur;
-        setProgress(Math.min(1, voice ? Math.min(el / silentDur, 0.95) : el / dur));
-        const finished = voice ? (el > 3500 && !agent.speaking() && agent.nexusLevel() < 0.02 && el > 1200) || el > MAX_VOICE_MS : el >= dur;
+        let finished: boolean;
+        if (voice) {
+          // wait for Nexus to really start, then for it (and the visitor, if they cut in) to go quiet
+          const nexusTalking = agent.speaking() || agent.nexusLevel() > 0.02;
+          const talking = nexusTalking || agent.visitorLevel() > 0.08; // the visitor cutting in only delays the next stop
+          if (nexusTalking) spoke.current = true;
+          if (talking) quietSince.current = 0;
+          else if (!quietSince.current) quietSince.current = now;
+          finished = (spoke.current && !talking && now - quietSince.current > GAP_MS) || (!spoke.current && el > NO_START_MS) || el > MAX_VOICE_MS;
+          setProgress(Math.min(0.95, el / silentDur));
+        } else {
+          finished = el >= silentDur;
+          setProgress(Math.min(1, el / silentDur));
+        }
         if (finished) {
           if (step < TOUR.length - 1) setStep(step + 1);
           else { setDone(true); devlog.add('sys', 'guided tour finished'); }
@@ -83,28 +110,40 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [open, step, paused, done, agent, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, step, paused, held, done, agent, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // scrolling by hand pauses the tour; Esc exits
+  // scrolling the page by hand holds the tour; it carries on by itself once the scrolling stops. Esc exits.
   useEffect(() => {
     if (!open) return;
-    const onManual = () => { if (performance.now() > ourScrollUntil.current && !paused) { setPaused(true); pausedAt.current = performance.now(); } };
+    const onManual = (e: Event) => {
+      // scrolling the tour card, the chat or the dock isn't leaving the tour
+      if (e.target instanceof Element && e.target.closest('.tour, .chat, .dock')) return;
+      if (paused || performance.now() < ourScrollUntil.current) return;
+      lastManual.current = performance.now();
+      if (!held) { setHeld(true); pausedAt.current = performance.now(); }
+    };
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     addEventListener('wheel', onManual, { passive: true });
     addEventListener('touchmove', onManual, { passive: true });
     addEventListener('keydown', onKey);
     return () => { removeEventListener('wheel', onManual); removeEventListener('touchmove', onManual); removeEventListener('keydown', onKey); };
-  }, [open, paused, onClose]);
+  }, [open, paused, held, onClose]);
+
+  // carry on by itself after the visitor stops scrolling
+  useEffect(() => {
+    if (!held) return;
+    const t = setInterval(() => { if (performance.now() - lastManual.current > HOLD_MS) resume(); }, 250);
+    return () => clearInterval(t);
+  }, [held]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resume = useCallback(() => {
     // continue where we were: shift the step start by the paused time, and bring the stop back into view
     stepStart.current += performance.now() - pausedAt.current;
-    setPaused(false);
+    setPaused(false); setHeld(false);
     ourScrollUntil.current = performance.now() + 1400;
     show(TOUR[step].target);
   }, [step, show]);
-  const togglePause = () => { if (paused) resume(); else { pausedAt.current = performance.now(); setPaused(true); } };
-  const next = () => { if (step < TOUR.length - 1) { setPaused(false); setStep(step + 1); } else setDone(true); };
+  const togglePause = () => { if (paused || held) resume(); else { pausedAt.current = performance.now(); setPaused(true); } };
   const pick = (m: TourMode) => {
     if (m === mode) return;
     narrated.current = -1;
@@ -153,10 +192,9 @@ export default function Tour({ open, mode, onMode, onClose, agent, show, onVoice
                 ? <><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z" /></svg>Resume</>
                 : <><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>Pause</>}
             </button>
-            <button type="button" data-ask onClick={next}>Next</button>
-
           </div>
-          {paused && <p className="tour-paused">Paused. Resume to continue the tour.</p>}
+          {paused && <p className="tour-paused">Paused. Press Resume and Nexus carries on.</p>}
+          {held && !paused && <p className="tour-paused">You're looking around. The tour carries on in a moment…</p>}
         </>
       )}
     </aside>

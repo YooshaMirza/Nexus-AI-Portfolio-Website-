@@ -13,6 +13,9 @@ import ExperienceCounter from './components/ExperienceCounter';
 import Chat from './components/Chat';
 import DesktopHint from './components/DesktopHint';
 import ThemeHint from './components/ThemeHint';
+import Entry from './components/Entry';
+import VisitCount from './components/VisitCount';
+import { ContactTime, CopyEmail } from './components/ContactBits';
 import DevLog from './components/DevLog';
 import Tour from './components/Tour';
 import GitHubPulse from './components/GitHubPulse';
@@ -22,6 +25,14 @@ const warmResume = () => { loadDoc().catch(() => {}); };
 const DEMO = new URLSearchParams(location.search).has('demo');
 /** read once at load (React dev runs effects twice, so the URL can't be re-read after it is cleaned) */
 const LINK_ACTION = ['chat', 'tour', 'resume'].find((k) => new URLSearchParams(location.search).has(k));
+/**
+ * The "Enter website" screen: once per browser tab, on the first page load. Its tap is the gesture the browser
+ * needs for sound, so Nexus speaks right away. Skipped for direct links (/?chat, /?tour, /?resume) and ?demo;
+ * ?entry always shows it (for testing).
+ */
+const ENTERED_KEY = 'nexus-entered';
+const ENTRY = !LINK_ACTION && !DEMO && (new URLSearchParams(location.search).has('entry') || (() => { try { return sessionStorage.getItem(ENTERED_KEY) !== '1'; } catch { return true; } })());
+const markEntered = () => { try { sessionStorage.setItem(ENTERED_KEY, '1'); } catch { /* private mode */ } };
 
 type Theme = 'light' | 'dark';
 const currentTheme = (): Theme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
@@ -136,6 +147,7 @@ export default function App() {
   const [tourMode, setTourMode] = useState<'silent' | 'voice' | 'chat'>('silent');
   const resumeRef = useRef(false);
   const endedRef = useRef(readEnded());
+  const [entryOpen, setEntryOpen] = useState(ENTRY);
   const [ended, setEnded] = useState(endedRef.current);
   // any call that ends (hang-up button, "bye", dropped line) turns off tap-anywhere starts
   useEffect(() => {
@@ -345,7 +357,7 @@ export default function App() {
     // If this browser already lets the site play sound (returning visitor, some browsers), boot with no tap at all.
     // Local testing: VITE_NEXUS_AUTOSTART=1 in .env starts Nexus on load (dev server only, never in a production build).
     // Set it to 0 to turn auto-start off completely while testing.
-    if (!endedRef.current && (AUTO === '1' || (AUTO !== '0' && agent.autoplayAllowed()))) tapStart();
+    if (!ENTRY && !endedRef.current && (AUTO === '1' || (AUTO !== '0' && agent.autoplayAllowed()))) tapStart();
     // Open the live session while the visitor reads, so the first tap answers almost instantly.
     // Off when VITE_NEXUS_AUTOSTART=0 in dev, so nothing connects until you really tap.
     const warm = () => { if (TAP_ANYWHERE && !endedRef.current) agent.warm(); };
@@ -725,13 +737,23 @@ export default function App() {
           <div className="wrap">
           <p className="eyebrow reveal"><span className="sec-idx">07 / 07</span> Contact</p>
           <h2 className="reveal">Have a call that an agent should take?</h2>
-          <p className="contact-sub reveal">Hiring, a freelance project or a voice agent idea. Yoosha usually replies within a day.</p>
-          <a className="mail reveal" href={`mailto:${person.email}`}>{person.email}</a>
-          <div className="contact-ctas reveal">
-            <a className="btn primary" href={person.upwork} target="_blank" rel="noreferrer">Hire me on Upwork</a>
-            <a className="btn" href={person.whatsapp} target="_blank" rel="noreferrer">Message on WhatsApp</a>
-            <button data-ask className="btn" onClick={() => ask('How can I work with Yoosha?')}>Ask Nexus how to work with him</button>
+          <p className="contact-sub reveal">Hiring, a freelance project or a voice agent idea.</p>
+          <ContactTime />
+          <div className="mail-row reveal">
+            <a className="mail" href={`mailto:${person.email}`}>{person.email}</a>
+            <CopyEmail email={person.email} />
           </div>
+          <div className="contact-ctas reveal">
+            <a className="btn primary" href={`mailto:${person.email}`}>
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m4 7 8 6 8-6" /></svg>
+              Email Yoosha
+            </a>
+            <a className="btn" href={person.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a>
+            <a className="btn" href={person.upwork} target="_blank" rel="noreferrer">Hire on Upwork</a>
+          </div>
+          <button data-ask className="contact-ask reveal" onClick={() => ask('How can I work with Yoosha?')}>
+            <span className="ca-dot" aria-hidden="true" />Not sure where to start? Ask Nexus how to work with him →
+          </button>
           <div className="contact-links reveal">
             <a href={`tel:${person.phone.replace(/\s/g, '')}`}>{person.phone}</a>
             {person.links.map((l) => <a key={l.href} href={l.href} target="_blank" rel="noreferrer">{l.label} ↗</a>)}
@@ -741,13 +763,27 @@ export default function App() {
       </main>
       <footer className="foot-band"><div className="wrap foot">
         <span>© {new Date().getFullYear()} {person.name}</span>
+        <VisitCount />
         <span>Nexus runs on Gemini Live. Voice is processed by Google while you talk and isn't stored by this site.</span>
         {TEST_KEY_ENTRY && <button className="linkish" onClick={() => { testKey.clear(); location.reload(); }}>Forget test key</button>}
       </div></footer>
 
       <ExperienceCounter />
-      <DesktopHint />
-      <ThemeHint theme={theme} blocked={chatOpen || resumeOpen || tourOpen} onSwitch={setTheme} />
+      {!entryOpen && <DesktopHint />}
+      {/* mounted after the entry screen closes, so its countdown starts from there */}
+      {!entryOpen && <ThemeHint theme={theme} blocked={chatOpen || resumeOpen || tourOpen} onSwitch={setTheme} />}
+      {entryOpen && (
+        <Entry
+          onUnlock={() => agent.unlock()}
+          onEnter={() => { markEntered(); start(); setTimeout(() => setEntryOpen(false), 900); }}
+          onSkip={(declined) => {
+            // "Explore without voice" means it: a stray tap later must not start talking. Talk to Nexus still works.
+            markEntered();
+            if (declined) { endedRef.current = true; setEnded(true); writeEnded(true); }
+            setTimeout(() => setEntryOpen(false), 900);
+          }}
+        />
+      )}
       <DevLog open={logOpen} onClose={() => setLogOpen(false)} />
       <Tour open={tourOpen} mode={tourMode} onMode={setTourMode} onClose={() => setTourOpen(false)} agent={agent} show={show} onVoice={start} onChat={openChat} />
       <Resume open={resumeOpen} onClose={closeResume} />

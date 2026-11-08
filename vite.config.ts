@@ -45,6 +45,20 @@ function nexusTokenDev(): Plugin {
           res.end(JSON.stringify({ error: (e as Error).message }));
         }
       });
+      // same as netlify/functions/visits.mts (counts in memory while developing)
+      server.middlewares.use('/api/visits', async (req, res) => {
+        try {
+          let raw = '';
+          for await (const c of req) raw += c;
+          const first = (() => { try { return JSON.parse(raw || '{}').first === true; } catch { return false; } })();
+          const { visits } = await server.ssrLoadModule('/server/visits.ts');
+          res.setHeader('content-type', 'application/json');
+          res.end(JSON.stringify(await visits(first, req.socket.remoteAddress)));
+        } catch (e) {
+          res.statusCode = 502;
+          res.end(JSON.stringify({ error: (e as Error).message }));
+        }
+      });
       // same as netlify/functions/github.mts
       server.middlewares.use('/api/github', async (_req, res) => {
         try {

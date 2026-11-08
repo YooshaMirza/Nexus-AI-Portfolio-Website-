@@ -94,6 +94,9 @@ export class VoiceBlob {
   uniforms: Record<string, THREE.IUniform>;
   /** screen-space target (CSS px) the blob centre and radius should occupy */
   target = { x: 0, y: 0, r: 100 };
+  /** extra turn (radians) toward the mouse: y = left/right, x = up/down */
+  look = { x: 0, y: 0 };
+  private lk = { x: 0, y: 0 };
   private cur = { x: 0, y: 0, r: 0 };
   private amp = 0;
   private listen = 0;
@@ -149,8 +152,10 @@ export class VoiceBlob {
     this.mesh.position.set((this.cur.x - window.innerWidth / 2) * u, -(this.cur.y - window.innerHeight / 2) * u, 0);
     const s = this.cur.r * u * (1 + this.amp * 0.06);
     this.mesh.scale.setScalar(Math.max(s, 0.0001));
-    this.mesh.rotation.y = time * 0.15;
-    this.mesh.rotation.x = Math.sin(time * 0.2) * 0.2;
+    this.lk.x += (this.look.x - this.lk.x) * Math.min(1, k * 0.5);
+    this.lk.y += (this.look.y - this.lk.y) * Math.min(1, k * 0.5);
+    this.mesh.rotation.y = time * 0.15 + this.lk.y;
+    this.mesh.rotation.x = Math.sin(time * 0.2) * 0.2 + this.lk.x;
     this.uniforms.uTime.value = time;
     this.uniforms.uAmp.value = this.amp;
     this.uniforms.uListen.value = this.listen;

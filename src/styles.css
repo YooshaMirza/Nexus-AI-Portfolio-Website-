@@ -971,3 +971,93 @@ a.talk{text-decoration:none}
 .th-ctl .th-go{background:var(--text);color:var(--fog);border-color:var(--text)}
 .th-ctl button:hover{border-color:var(--cobalt)}
 @media (max-width:820px){.th-hint{right:12px;left:12px;width:auto;top:76px}.th-hint::before{right:102px}}
+
+/* ENTRY — "Meet Nexus" welcome (preview: /?entry). One tap = the browser's sound permission, so Nexus speaks at once */
+@property --hole{syntax:"<length>";inherits:false;initial-value:0px}
+html.entry-open{overflow:hidden}
+.entry-open .orbit-tags,.entry-open .hero-blob .sat{visibility:hidden}
+.entry{position:fixed;inset:0;z-index:59;display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;align-items:center;padding:clamp(20px,5vh,48px) 20px clamp(24px,6vh,56px);cursor:pointer;overflow:hidden;
+  background:radial-gradient(60vmax circle at 50% 42%,rgba(36,67,242,.12),transparent 60%),radial-gradient(circle at 1px 1px,var(--dot) 1px,transparent 0) 0 0/26px 26px,var(--fog);
+  -webkit-mask-image:radial-gradient(circle at var(--ox) var(--oy),transparent var(--hole),#000 calc(var(--hole) + 1px));mask-image:radial-gradient(circle at var(--ox) var(--oy),transparent var(--hole),#000 calc(var(--hole) + 1px));
+  transition:--hole .85s cubic-bezier(.6,0,.2,1),opacity .4s .5s;animation:enin .7s var(--ease) both}
+.entry.out{--hole:160vmax;opacity:0;pointer-events:none}
+@keyframes enin{from{opacity:0}}
+.en-kick{display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:color-mix(in oklab,var(--surface) 70%,transparent);font-size:13.5px;font-weight:600;color:var(--text-2);animation:enup .7s var(--ease) .15s both}
+.en-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#25C26A}
+.en-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid #25C26A;opacity:.35;animation:ring 1.6s ease-out infinite}
+.en-mid{display:flex;flex-direction:column;align-items:center;min-height:0}
+.en-say{margin-top:-2%;font-family:Bricolage;font-weight:600;font-size:clamp(17px,1.9vw,22px);letter-spacing:-.01em;text-align:center;color:var(--text);max-width:44ch;text-wrap:balance}
+.en-say span{color:var(--quiet);animation:ensay .5s var(--ease) both}
+@keyframes ensay{from{color:var(--quiet);opacity:0}40%{color:var(--cobalt);opacity:1}to{color:var(--text);opacity:1}}
+.en-blob{position:relative;width:min(40vh,72vw,420px);aspect-ratio:1}
+@media (max-width:640px){.en-blob{width:min(42vh,84vw)}}
+.en-blob::after{content:"";position:absolute;left:50%;top:50%;width:70%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(92,123,255,.28),transparent 65%);filter:blur(12px);z-index:-1}
+.en-copy{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;max-width:560px}
+.en-name{font-family:Bricolage;font-weight:700;font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.03em;animation:enup .7s var(--ease) .3s both}
+.en-line{font-size:clamp(15px,1.6vw,18px);color:var(--slate);animation:enup .7s var(--ease) .4s both}
+.en-mag{display:inline-block;margin-top:12px;will-change:transform}
+.en-go{position:relative;display:inline-flex;align-items:center;gap:14px;padding:12px 12px 12px 30px;min-height:58px;border-radius:999px;font-size:17px;font-weight:600;background:var(--cobalt);color:#fff;
+  box-shadow:0 18px 44px -14px rgba(36,67,242,.65),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s,box-shadow .2s;animation:enup .7s var(--ease) .55s both}
+.en-go::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--cobalt);animation:enring 2.2s ease-out 1.4s infinite;pointer-events:none}
+@keyframes enring{from{transform:scale(1);opacity:.55}70%,to{transform:scale(1.18,1.5);opacity:0}}
+.entry:hover .en-go{box-shadow:0 22px 54px -14px rgba(36,67,242,.8),inset 0 1px 0 rgba(255,255,255,.3)}
+.en-go:active{transform:scale(.97)}
+.en-arrow{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2);transition:transform .25s var(--ease)}
+.entry:hover .en-arrow{transform:translateX(4px)}
+/* cursor light: soft glow + brighter grid dots around the pointer (same idea as the site's lit grid) */
+.entry::before,.entry::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .6s}
+.entry.lit-on::before,.entry.lit-on::after{opacity:1}
+.entry::before{background:radial-gradient(460px circle at var(--mx,-999px) var(--my,-999px),rgba(36,67,242,.09),transparent 70%)}
+.entry::after{background:radial-gradient(circle at 1px 1px,rgba(36,67,242,.55) 1.1px,transparent 0) 0 0/26px 26px;-webkit-mask-image:radial-gradient(180px circle at var(--mx,-999px) var(--my,-999px),#000,transparent 75%);mask-image:radial-gradient(180px circle at var(--mx,-999px) var(--my,-999px),#000,transparent 75%)}
+:root[data-theme="dark"] .entry::after{background-image:radial-gradient(circle at 1px 1px,rgba(140,162,255,.75) 1.1px,transparent 0)}
+.entry>*{position:relative;z-index:1}.entry>.en-tags{position:absolute}
+.en-note{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--slate);animation:enup .7s var(--ease) .65s both}
+.en-note svg{flex:none;color:var(--cobalt)}
+.en-skip{margin-top:4px;padding:8px 12px;font-size:14px;color:var(--slate);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line);animation:enup .7s var(--ease) .75s both}
+.en-skip:hover{color:var(--text);text-decoration-color:currentColor}
+@keyframes enup{from{opacity:0;transform:translateY(12px)}}
+.en-tags{position:absolute;inset:0;pointer-events:none}
+.en-tags.en-front{position:fixed;z-index:61;transition:opacity .3s}
+.en-tags.en-front.out{opacity:0}
+.en-tag{position:absolute;left:0;top:0;opacity:0;padding:7px 14px;border-radius:999px;white-space:nowrap;font-size:13.5px;font-weight:600;color:var(--text);background:color-mix(in oklab,var(--surface) 82%,transparent);border:1px solid var(--line);box-shadow:0 8px 24px -14px rgba(15,27,38,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@media (max-width:640px){
+  .en-tag{font-size:12px;padding:6px 11px}
+  .en-mag{width:100%}.en-go{width:100%;justify-content:space-between;font-size:17px}
+  .en-note{display:block;font-size:12.5px;max-width:300px;line-height:1.5}
+  .en-note svg{display:inline;vertical-align:-3px;margin-right:4px}
+}
+@media (max-height:620px){.en-say{font-size:16px}.en-blob{width:min(32vh,60vw)}.en-name{font-size:28px}.en-copy{gap:6px}}
+@media (prefers-reduced-motion:reduce){.entry,.entry *{animation:none!important}.entry{transition:opacity .3s}}
+:root[data-theme="dark"] .entry{background:radial-gradient(60vmax circle at 50% 42%,rgba(115,137,255,.16),transparent 60%),var(--grid,none),var(--fog)}
+:root[data-theme="dark"] .en-go{background:linear-gradient(180deg,#8095FF,#4B64F6)}
+:root[data-theme="dark"] .en-tag{background:rgba(14,22,48,.75);border-color:var(--edge,var(--line))}
+
+/* visitor counter in the footer */
+.visits{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.visits b{font-weight:600;color:#fff}
+.visits svg{opacity:.75}
+
+/* CONTACT — local time, copy email, one main action */
+.contact-time{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:15px;color:#A9B8C5}
+.ct-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#25C26A;flex:none}
+.ct-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #25C26A;opacity:.35;animation:ring 1.8s ease-out infinite}
+.ct-dot.night{background:#F5B83D}.ct-dot.night::after{border-color:#F5B83D}
+.mail-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:32px}
+.mail-row .mail{margin-top:0}
+.copy-mail{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;font-size:13.5px;font-weight:600;color:#C9D4DE;border:1px solid rgba(232,238,243,.28);transition:color .2s,border-color .2s,background .2s}
+.copy-mail:hover{color:#fff;border-color:#fff}
+.copy-mail.done{color:#5CE1CF;border-color:#5CE1CF}
+.contact .btn.primary svg{flex:none}
+.contact-ask{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:15px;color:#A9B8C5;text-align:left}
+.contact-ask:hover{color:#fff}
+.ca-dot{width:9px;height:9px;border-radius:50%;background:var(--cobalt);box-shadow:0 0 0 4px rgba(36,67,242,.25);flex:none}
+
+/* tour stops in chat: typed out word by word, like someone presenting */
+.msg.typed .w{animation:wtype .35s var(--ease) both;animation-delay:calc(var(--i) * 40ms)}
+@keyframes wtype{from{opacity:0;color:var(--cobalt)}}
+@media (prefers-reduced-motion:reduce){.msg.typed .w{animation:none}}
+
+/* tour: a box around the item Nexus is talking about */
+[data-ctx][data-tour-focus]{outline:3px solid var(--cobalt);outline-offset:8px;border-radius:16px;box-shadow:0 0 0 14px rgba(36,67,242,.08);transition:outline-color .3s,box-shadow .3s;animation:tfocus .5s var(--ease) both}
+@keyframes tfocus{from{outline-color:transparent;box-shadow:0 0 0 0 rgba(36,67,242,0)}}
+@media (prefers-reduced-motion:reduce){[data-ctx][data-tour-focus]{animation:none}}

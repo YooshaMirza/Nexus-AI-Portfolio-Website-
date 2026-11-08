@@ -14,7 +14,8 @@ let docP: Promise<Doc> | undefined;
 /** pdf.js is loaded only when the resume is first opened. */
 export function loadDoc() {
   docP ??= (async () => {
-    const [pdfjs, worker] = await Promise.all([import('pdfjs-dist'), import('pdfjs-dist/build/pdf.worker.min.mjs?url')]);
+    // the LEGACY build: the modern one needs very new browsers, and many phones fell back to "Open on Google Drive"
+    const [pdfjs, worker] = await Promise.all([import('pdfjs-dist/legacy/build/pdf.mjs'), import('pdfjs-dist/legacy/build/pdf.worker.min.mjs?url')]);
     pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
     return pdfjs.getDocument({ url: PDF_URL }).promise;
   })();
