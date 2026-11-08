@@ -19,6 +19,7 @@ import { ContactTime, CopyEmail } from './components/ContactBits';
 import DevLog from './components/DevLog';
 import Tour from './components/Tour';
 import GitHubPulse from './components/GitHubPulse';
+import { devlog } from './agent/devlog';
 // start fetching the resume when someone shows intent to open it
 const warmResume = () => { loadDoc().catch(() => {}); };
 
@@ -315,7 +316,8 @@ export default function App() {
     setTourMode(m);
     setTourOpen(true);
   }, [closeResume, closeChat, agent, chatOpen]);
-  useEffect(() => { agent.onTour = () => startTour('voice'); }, [agent, startTour]);
+  // Nexus may not pull the visitor out of the resume into the tour (starting the tour closes the resume)
+  useEffect(() => { agent.onTour = () => { if (resumeRef.current) { devlog.add('sys', 'tour ignored: resume is open'); return; } startTour('voice'); }; }, [agent, startTour]);
 
   // Link shortcuts: /?chat opens the chat, /?tour starts the tour, /?resume opens the resume (the 404 page uses these)
   useEffect(() => {
