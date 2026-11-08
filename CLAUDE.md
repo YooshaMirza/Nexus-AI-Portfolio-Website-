@@ -134,6 +134,9 @@ Key behaviours:
 - Chat = "live brief" (approved from a preview): answer words light up as they stream (`.msg.live .w`), visitor lines are teal "You asked", every page item Nexus links ([label](id)) or shows becomes an evidence card (`src/components/evidence.ts`, built from content.ts: logo, kind, meta, accuracy bar) that jumps to it, header shows the live phase (Thinking / Answering / Opening X), follow-up chips after the last answer. On phones Nexus's own show_on_page does NOT close the chat; only a tapped card/link jumps.
 - Theme suggestion (`ThemeHint.tsx`): once per visit, 9 s in (22 s on phones, after the desktop tip), worded by local time (night 19:00-06:00) and current theme; never over chat/resume/tour; skipped if the visitor already switched theme.
 
+- Tap-to-start fix (8 Nov 2026): Chrome only unlocks audio on the mouse PRESS (pointerdown), not on release/click, and waking the audio device can take 1-2 s. So App calls `agent.unlock()` on pointerdown, PcmPlayer.resume() reuses a pending resume, and start() waits up to 3 s for audio. Before this, tap-anywhere silently failed on the live site.
+- Deploy: GitHub repo YooshaMirza/Nexus-AI-Portfolio-Website- (main) auto-deploys Netlify site `yoosha-portfolio` (id 96561dde-…, live at yoosha-portfolio.netlify.app; yoosha.tech domain expired). The folder is linked with the Netlify CLI. Env vars GEMINI_API_KEY + GITHUB_TOKEN are set as secrets in production. The "Built with Netlify" badge can't be removed on the free plan (site was created via Bolt); a fresh project imported from GitHub would not have it.
+
 ## Run
 ```bash
 npm install

@@ -35,6 +35,8 @@ export interface VoiceAgent {
   warm(): void;
   /** True when this browser will play sound without a tap (returning visitors, some browsers). */
   autoplayAllowed(): boolean;
+  /** Unlock audio inside a press (pointerdown / keydown) so a tap can start the call on release. Plays nothing. */
+  unlock(): void;
   start(ctx: PageContext, question?: string, note?: string): Promise<void>;
   /** Start the call if needed and ask Nexus something. Call from a click. */
   ask(text: string, ctx: PageContext): void;
@@ -139,7 +141,7 @@ export class NexusAgent implements VoiceAgent {
   private async fetchToken(): Promise<Token> {
     const r = await fetch('/api/nexus-token', { method: 'POST' });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j.token) throw new Error(j.error || `Token request failed (${r.status})`);
+    if (!r.ok || !j.token) { if (j.code) console.warn(`[nexus] token endpoint said: ${j.code}`); throw new Error(j.error || `Token request failed (${r.status})`); }
     return { token: j.token, model: j.model || LIVE_MODEL, at: Date.now() };
   }
 
@@ -155,6 +157,10 @@ export class NexusAgent implements VoiceAgent {
     const nav = navigator as unknown as { getAutoplayPolicy?: (t: string) => string };
     try { if (nav.getAutoplayPolicy) return nav.getAutoplayPolicy('audiocontext') === 'allowed'; } catch { /* not supported */ }
     try { this.player ??= new PcmPlayer(); return this.player.ctx.state === 'running'; } catch { return false; }
+  }
+
+  unlock() {
+    try { this.player ??= new PcmPlayer(); void this.player.resume().catch(() => {}); } catch { /* no audio support */ }
   }
 
   warm() {
@@ -206,8 +212,9 @@ export class NexusAgent implements VoiceAgent {
     const resumed = this.player.resume();
     this.ctx = { ...ctx, since: performance.now() };
     try {
-      // If the browser didn't count this as a user gesture, audio stays locked: wait quietly for the next tap.
-      await Promise.race([resumed, new Promise((r) => setTimeout(r, 400))]);
+      // Waking the audio device can take over a second (Windows, Bluetooth), so wait up to 3 s.
+      // If the browser didn't count this as a user gesture, resume never finishes: wait quietly for the next tap.
+      await Promise.race([resumed, new Promise((r) => setTimeout(r, 3000))]);
       if (this.player.ctx.state !== 'running') return;
       if (['connecting', 'live'].includes(this.getState().status)) return; // another tap won the race
       this.set({ status: 'connecting', error: undefined, nexusText: '', visitorText: question ?? '' });

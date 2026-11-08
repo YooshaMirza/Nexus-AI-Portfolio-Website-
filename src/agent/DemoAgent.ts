@@ -47,6 +47,7 @@ export class DemoAgent implements VoiceAgent {
   tourNote(line: string) { if (this.state.status === 'live') this.say(line, 'nexus'); }
   warm() {}
   autoplayAllowed() { return false; }
+  unlock() { /* nothing to unlock in the scripted demo */ }
   ask(text: string, ctx: PageContext) {
     if (this.state.status === 'live') { this.sendText(text); return; }
     this.start(ctx, text);

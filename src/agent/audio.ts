@@ -32,7 +32,12 @@ export class PcmPlayer {
     this.analyser.connect(this.ctx.destination);
   }
 
-  resume() { return this.ctx.state === 'suspended' ? this.ctx.resume() : Promise.resolve(); }
+  private resuming?: Promise<void>;
+  /** One resume at a time: a second call without a user gesture must not replace the one a press started. */
+  resume() {
+    if (this.ctx.state !== 'suspended') return Promise.resolve();
+    return (this.resuming ??= this.ctx.resume().finally(() => { this.resuming = undefined; }));
+  }
 
   play(base64: string) {
     const bin = atob(base64);

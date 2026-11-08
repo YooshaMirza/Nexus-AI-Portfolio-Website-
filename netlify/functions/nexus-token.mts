@@ -14,7 +14,10 @@ export default async (req: Request, context: Context) => {
     return Response.json(body, { headers: { 'cache-control': 'no-store' } });
   } catch (e) {
     console.error('nexus-token failed', e);
-    return Response.json({ error: isQuotaError(e) ? SERVICE_MESSAGE.quota : 'Nexus is unavailable right now.' }, { status: 503 });
+    // a safe reason code (never the key) so a failing deploy can be diagnosed from the browser console
+    const m = String((e as Error)?.message ?? e);
+    const code = /GEMINI_API_KEY is not set/.test(m) ? 'no-key' : /API key not valid|API_KEY_INVALID|PERMISSION_DENIED|401|403/i.test(m) ? 'key-rejected' : /not found|404|unsupported/i.test(m) ? 'model-unavailable' : isQuotaError(e) ? 'quota' : 'other';
+    return Response.json({ error: isQuotaError(e) ? SERVICE_MESSAGE.quota : 'Nexus is unavailable right now.', code }, { status: 503 });
   }
 };
 

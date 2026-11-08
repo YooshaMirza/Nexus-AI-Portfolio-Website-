@@ -355,8 +355,14 @@ export default function App() {
 
     // Only a real tap / click / key starts Nexus. Scrolling (wheel, scrollbar drag, touch swipe) must not.
     let down: { x: number; y: number; t: number; sy: number } | null = null;
-    const onDown = (e: PointerEvent) => { down = { x: e.clientX, y: e.clientY, t: performance.now(), sy: scrollY }; };
     const isBlocked = (el: EventTarget | null) => !(el instanceof Element) || el === document.documentElement || !!el.closest('a, .dock-ctl, form, [data-ask], input, textarea, select, .chat');
+    const mayTapStart = () => TAP_ANYWHERE && !endedRef.current && !['live', 'connecting'].includes(agent.getState().status);
+    const onDown = (e: PointerEvent) => {
+      down = { x: e.clientX, y: e.clientY, t: performance.now(), sy: scrollY };
+      // Chrome only unlocks audio on the mouse PRESS, not on release, so get permission now (plays nothing).
+      // Touch unlocks on release, which start() handles itself.
+      if (e.pointerType === 'mouse' && mayTapStart() && !isBlocked(e.target)) agent.unlock();
+    };
     const onUp = (e: PointerEvent) => {
       const d = down; down = null;
       if (!d || isBlocked(e.target)) return;
@@ -368,6 +374,7 @@ export default function App() {
       // scrolling keys and modifiers don't count
       if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'Escape'].includes(e.key)) return;
       if (isBlocked(e.target)) return;
+      if (mayTapStart()) agent.unlock();
       tapStart();
     };
     const opts = { capture: true } as const;
