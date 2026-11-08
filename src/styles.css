@@ -1061,3 +1061,12 @@ html.entry-open{overflow:hidden}
 [data-ctx][data-tour-focus]{outline:3px solid var(--cobalt);outline-offset:8px;border-radius:16px;box-shadow:0 0 0 14px rgba(36,67,242,.08);transition:outline-color .3s,box-shadow .3s;animation:tfocus .5s var(--ease) both}
 @keyframes tfocus{from{outline-color:transparent;box-shadow:0 0 0 0 rgba(36,67,242,0)}}
 @media (prefers-reduced-motion:reduce){[data-ctx][data-tour-focus]{animation:none}}
+
+/* make room for Netlify's free-plan badge (bottom-right, can't be removed): lift what would sit under it */
+@media (min-width:821px){.nl-badge .chat{bottom:calc(var(--nlb) + 10px)}}
+@media (min-width:821px) and (max-width:1220px){.nl-badge .dock{bottom:calc(var(--nlb) + 10px)}}
+@media (max-width:820px){
+  .nl-badge .dock{bottom:calc(var(--nlb) + 8px + env(safe-area-inset-bottom))}
+  .nl-badge .chat{padding-bottom:calc(var(--nlb) + env(safe-area-inset-bottom))}
+  .nl-badge .foot{padding-bottom:calc(150px + var(--nlb))}
+}

@@ -330,6 +330,21 @@ export default function App() {
 
   // Nexus can switch the theme; the reveal starts from the dock where Nexus lives
   useEffect(() => { agent.onTheme = (m) => setTheme(m, innerWidth / 2, innerHeight - 60); }, [agent, setTheme]);
+  // Netlify's free plan adds a "Built with Netlify" badge in the bottom-right corner (it can't be switched off).
+  // We don't touch it; we just lift the dock and the chat above it wherever they would collide.
+  useEffect(() => {
+    const check = () => {
+      const f = document.getElementById('nl-badge-frame');
+      const h = f ? f.getBoundingClientRect().height : 0;
+      document.documentElement.classList.toggle('nl-badge', h > 0);
+      if (h > 0) document.documentElement.style.setProperty('--nlb', `${Math.round(h)}px`);
+    };
+    check();
+    const mo = new MutationObserver(check);
+    mo.observe(document.body, { childList: true });
+    const t = setInterval(check, 3000); // the badge can also resize or appear late
+    return () => { mo.disconnect(); clearInterval(t); };
+  }, []);
 
   // Start Nexus on the first real gesture (browsers block sound before one)
   /** Explicit start: the Talk to Nexus buttons. Clears a previous hang-up. */
