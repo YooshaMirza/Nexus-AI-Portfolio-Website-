@@ -13,7 +13,7 @@ export default function GitHubPulse() {
   useEffect(() => { fetch('/api/github').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && j.contributions) setG(j); }).catch(() => {}); }, []);
   if (!g) return null;
   return (
-    <a className="gh-hero reveal in" href={g.url} target="_blank" rel="noreferrer" aria-label={`GitHub: ${g.contributions} contributions and ${g.repos} repositories. Open profile`}>
+    <a className="gh-hero reveal" data-in="" href={g.url} target="_blank" rel="noreferrer" aria-label={`GitHub: ${g.contributions} contributions and ${g.repos} repositories. Open profile`}>
       <span className="gh-mark">{GH_ICON}</span>
       <span className="gh-num"><b><CountUp value={g.contributions.toLocaleString('en-IN')} /></b><small>contributions on GitHub<em>all time, incl. private client work</em></small></span>
       <span className="gh-sep" aria-hidden="true" />

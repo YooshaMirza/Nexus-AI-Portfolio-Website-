@@ -193,10 +193,10 @@ export default function App() {
 
   // Reveal-on-scroll for anything marked .reveal
   useEffect(() => {
-    const els = document.querySelectorAll('.reveal:not(.in)');
-    if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('in')); return; }
+    const els = document.querySelectorAll('.reveal:not([data-in])');
+    if (!('IntersectionObserver' in window)) { els.forEach((e) => e.setAttribute('data-in', '')); return; }
     // starts revealing a little before content scrolls in, so normal scrolling never shows blanks
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px 12% 0px', threshold: 0.01 });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.setAttribute('data-in', ''); io.unobserve(e.target); } }), { rootMargin: '0px 0px 12% 0px', threshold: 0.01 });
     els.forEach((e) => io.observe(e));
 
     // scroll speed: above ~2 px/ms (a flick or fast wheel) switch to quick reveals for a moment
@@ -212,7 +212,7 @@ export default function App() {
           root.classList.add('scroll-fast');
           // reveal everything already passed or about to appear, so nothing is left blank
           const limit = innerHeight * 1.25;
-          document.querySelectorAll('.reveal:not(.in)').forEach((el) => { if (el.getBoundingClientRect().top < limit) el.classList.add('in'); });
+          document.querySelectorAll('.reveal:not([data-in])').forEach((el) => { if (el.getBoundingClientRect().top < limit) el.setAttribute('data-in', ''); });
           clearTimeout(calm);
           calm = window.setTimeout(() => root.classList.remove('scroll-fast'), 350);
         }
