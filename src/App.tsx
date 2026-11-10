@@ -538,7 +538,7 @@ export default function App() {
                 <div className="what">
                   <h3>{j.role}{j.current && <span className="now">Now</span>}</h3>
                   <p className="org">
-                    <span className="org-pill">{j.logo ? <img className={`org-logo${j.logoWide ? ' wide' : ''}`} src={j.logo} alt="" width={j.logoWide ? 69 : 24} height={24} loading="lazy" /> : <span className="org-mark" aria-hidden="true">{j.org.replace(/[^A-Za-z]/g, '').slice(0, 1)}</span>}{j.org}</span>
+                    <span className="org-pill">{j.logo ? <img className={`org-logo${j.logoWide ? ' wide' : ''}`} src={j.logo} alt="" width={j.logoWide ? undefined : 24} height={24} loading="lazy" /> : <span className="org-mark" aria-hidden="true">{j.org.replace(/[^A-Za-z]/g, '').slice(0, 1)}</span>}{j.org}</span>
                     <span className="job-type">{j.type}</span>
                   </p>
                   {j.stages && (

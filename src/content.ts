@@ -138,6 +138,8 @@ export const jobs: Job[] = [
     id: 'job-internshala',
     role: 'Internshala Student Partner',
     org: 'Internshala',
+    logo: '/logos/internshala.png',
+    logoWide: true,
     when: 'Sep – Nov 2022',
     type: 'Internship',
     text: "Remote student partner for Internshala: brought its internships and trainings to students, working on outreach and marketing.",

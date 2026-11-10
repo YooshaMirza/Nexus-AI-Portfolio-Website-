@@ -1123,7 +1123,7 @@ html.entry-open{overflow:hidden}
 :root[data-theme="dark"] .lead-track{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01)),var(--paper);border-color:var(--edge)}
 
 /* wide wordmark logos (Cloudbird) sit in a rounded rectangle instead of a circle */
-.org-logo.wide{width:auto;height:24px;aspect-ratio:382 / 132;border-radius:6px;object-fit:contain;padding:2px 4px;box-sizing:border-box}
+.org-logo.wide{width:auto;height:24px;max-width:96px;border-radius:6px;object-fit:contain;padding:2px 4px;box-sizing:border-box}
 .xp-split small{margin-left:6px;font-size:11px;color:var(--slate)}
 .lead-link{display:inline-block;margin-top:12px;font-size:14px;font-weight:600;color:var(--cobalt);text-decoration:none}
 .lead-link:hover{text-decoration:underline;text-underline-offset:4px}
