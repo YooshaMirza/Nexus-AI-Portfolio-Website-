@@ -30,7 +30,7 @@ ${x}
 
 JOURNEY: ${y}.
 
-EXPERIENCE: ${(() => { const s = experienceSplit(jobs); return `${formatMonths(s.fullTime)} full-time (Neurabit Solutions after his conversion, and Weya.ai) plus ${formatMonths(s.internship)} of internships, ${formatMonths(s.total)} in all across ${jobs.length} roles`; })()}, plus freelance AI and web work since 2021. If asked how much experience he has, give the full-time figure first, then the internships, in those words; never round up. (Overlapping internships are counted once; only explain that if asked.)
+EXPERIENCE: ${(() => { const s = experienceSplit(jobs); return `${formatMonths(s.fullTime)} full-time (Neurabit Solutions and Weya.ai) plus ${formatMonths(s.internship)} of internships, ${formatMonths(s.total)} in all across ${jobs.length} roles`; })()}, plus freelance AI and web work since 2021. If asked how much experience he has, give the full-time figure first, then the internships, in those words; never round up. (Overlapping internships are counted once; only explain that if asked.)
 
 WORK:
 ${j}

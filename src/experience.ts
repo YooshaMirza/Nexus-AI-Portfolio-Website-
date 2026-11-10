@@ -34,12 +34,13 @@ export function formatMonths(n: number): string {
 type Role = { id: string; when: string; type: string; stages?: { when: string; type: string }[] };
 export type Split = { fullTime: number[]; internship: number[] };
 
-/** Calendar months of one role, by kind. A role with stages (intern then full-time) counts each stage as what it was. */
+/**
+ * Calendar months of one role, by kind. A role that became full-time (type "Intern → Full-time", i.e. Neurabit)
+ * counts as full-time for its whole span: Yoosha's call (11 Nov 2026).
+ */
 export function roleSplit(j: Role, now = new Date()): Split {
-  const parts = j.stages?.length ? j.stages : [{ when: j.when, type: j.type }];
-  const out: Split = { fullTime: [], internship: [] };
-  for (const p of parts) (/full-time/i.test(p.type) ? out.fullTime : out.internship).push(...monthsOf(p.when, now));
-  return out;
+  const months = monthsOf(j.when, now);
+  return /full-time/i.test(j.type) ? { fullTime: months, internship: [] } : { fullTime: [], internship: months };
 }
 
 /**
