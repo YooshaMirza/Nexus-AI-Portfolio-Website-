@@ -394,7 +394,6 @@ export const about = {
   beyond: [
     { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for clients on Fiverr, Upwork and directly, with 5-star ratings.' },
     { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.' },
-    { id: 'beyond-campus', title: 'Campus roles', when: '2022 – 2026', text: 'Placement committee member, batch representative and CodeChef BU core team.' },
   ],
   skills: [
     { group: 'Generative AI', items: ['LLMs', 'RAG', 'MCP', 'Agentic AI', 'Voice agents', 'Transformers', 'Diffusion models'] },
@@ -483,12 +482,24 @@ export const journey = [
 ];
 
 /** Sections in page order — used by the nav, the context tracker and Nexus's show_on_page tool. */
+/**
+ * Leadership & community (his own words, 11 Nov 2026). `from`/`to` are positions on the 2022 to 2026 college
+ * timeline in years (2022.6 = Aug 2022), used to draw each role's bar to scale.
+ */
+export type LeadRole = { id: string; title: string; org: string; when: string; span: string; text: string; from: number; to: number };
+export const leadership: LeadRole[] = [
+  { id: 'lead-batchrep', title: 'Batch Representative', org: 'Bennett University', when: '2022 – 2026', span: 'All 4 years', text: 'Represented his batch for the whole of his B.Tech, every year from the first semester to the last.', from: 2022.6, to: 2026.4 },
+  { id: 'lead-placement', title: 'Placement Committee Member', org: 'Bennett University', when: '2024 – 2025', span: 'Full 3rd year', text: 'Part of the committee that runs campus placements with recruiting companies, for his entire third year.', from: 2024.6, to: 2025.4 },
+  { id: 'lead-codechef', title: 'Core Team, CodeChef BU', org: "The university's competitive programming club", when: '2022', span: '1st semester', text: 'Joined the core team of the coding club in his very first semester.', from: 2022.6, to: 2022.95 },
+];
+
 export const sections = [
   { id: 'intro', label: 'Intro' },
   { id: 'expertise', label: 'Expertise' },
   { id: 'work', label: 'Work' },
   { id: 'projects', label: 'Projects' },
   { id: 'opensource', label: 'Open source' },
+  { id: 'leadership', label: 'Leadership' },
   { id: 'research', label: 'Research' },
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },

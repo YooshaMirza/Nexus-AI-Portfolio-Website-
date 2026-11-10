@@ -59,6 +59,11 @@ export const TOUR: TourStop[] = [
     say: `Aur doosra, Springer ke saath in press hai: brain tumour detection on MRI, ${p2.figure} accuracy.`,
   },
   {
+    target: 'leadership', label: 'Leadership',
+    line: 'Beyond code: batch representative for all four years, placement committee member in his third year, CodeChef BU core team, and a YouTube educator since 2022.',
+    say: 'Aur sirf code nahi: chaar saal batch representative, third year mein placement committee, CodeChef BU core team, aur 2022 se YouTube pe padhata bhi hai.',
+  },
+  {
     target: 'contact', label: 'Work with him',
     line: "That's the tour. Hire him on Upwork, or reach him by email or WhatsApp right here.",
     say: 'Toh yeh tha tour! Agar aap hire karna chahte ho, toh Upwork pe hire kar sakte ho, ya email aur WhatsApp yahin pe hai.',

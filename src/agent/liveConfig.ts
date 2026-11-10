@@ -8,7 +8,7 @@
 import type { Behavior, FunctionDeclaration, LiveConnectConfig, Modality, Type } from '@google/genai';
 
 const OBJECT = 'OBJECT' as Type, STRING = 'STRING' as Type, NON_BLOCKING = 'NON_BLOCKING' as Behavior;
-import { about, journey, jobs, openSource, papers, person, pillars, projects, sections } from '../content';
+import { about, leadership, journey, jobs, openSource, papers, person, pillars, projects, sections } from '../content';
 import { experienceSplit, formatMonths } from '../experience';
 
 export const LIVE_MODEL = 'gemini-3.8-live';
@@ -46,6 +46,8 @@ ${openSource.map((o) => `- [${o.id}] ${o.repo}${o.formerly ? ` (formerly ${o.for
 
 EDUCATION: ${about.education.map((e) => `${e.title}${e.org ? ', ' + e.org : ''}${e.when ? ' (' + e.when + ')' : ''}: ${e.score} ${e.unit}`).join('; ')}.
 ACHIEVEMENTS: ${about.achievements.map((a) => a.text).join('; ')}.
+LEADERSHIP (campus roles, a real part of who he is: mention them when asked about leadership, teamwork, soft skills or what he's like beyond code):
+${leadership.map((l) => `- [${l.id}] ${l.title}, ${l.org} (${l.span}, ${l.when}): ${l.text}`).join('\n')}
 BEYOND WORK:
 ${b}
 SKILLS: ${s}.
@@ -127,6 +129,8 @@ export const TARGET_IDS: string[] = [
   ...projects.map((p) => p.id),
   ...papers.map((p) => p.id),
   ...openSource.map((o) => o.id),
+  ...leadership.map((l) => l.id),
+  ...about.beyond.map((b) => b.id),
 ];
 
 export const tools: FunctionDeclaration[] = [

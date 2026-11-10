@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { about, areaLabels, journey, jobs, openSource, papers, person, pillars, projects, sections, type Area } from './content';
+import { about, areaLabels, leadership, journey, jobs, openSource, papers, person, pillars, projects, sections, type Area } from './content';
 import { NEEDS_KEY, NexusAgent, TEST_KEY_ENTRY, testKey, type PageContext, type VoiceAgent } from './agent/NexusAgent';
 import { DemoAgent } from './agent/DemoAgent';
 import Stage from './components/Stage';
@@ -496,7 +496,7 @@ export default function App() {
 
         <section id="expertise" className="band band-paper" data-ctx="expertise" data-title="Expertise">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">01 / 07</span><h2>Expertise</h2></div><p>Worked out from his roles, projects and papers. Each meter counts the work that proves it; tap any piece of evidence to jump to it.</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">01 / 08</span><h2>Expertise</h2></div><p>Worked out from his roles, projects and papers. Each meter counts the work that proves it; tap any piece of evidence to jump to it.</p></div>
           <div className="pillars">
             {pillars.map((p, i) => (
               <article key={p.id} className={`pillar spot reveal area-${p.area}${i === 0 ? ' lead' : ''}${viewing(p.id)}`} data-ctx={p.id} data-label={p.title} data-detail={p.line} style={{ ['--d' as string]: `${i * 70}ms` }}>
@@ -510,7 +510,7 @@ export default function App() {
                 <div className="meter" aria-hidden="true"><i style={{ ['--v' as string]: p.evidence.length / maxEvidence }} /></div>
                 <p className="p-count">{p.evidence.length} pieces of evidence: {['role', 'project', 'paper', 'contribution'].map((k) => { const n = p.evidence.filter((e) => evidenceKind(e) === k).length; return n ? `${n} ${k}${n > 1 ? 's' : ''}` : null; }).filter(Boolean).join(', ')}</p>
                 <ul className="evidence">
-                  {p.evidence.map((e) => <li key={e}><button onClick={() => show(e.startsWith('beyond-') ? 'about-beyond' : e)} data-kind={evidenceKind(e)}>{shortLabel[e] ?? e}</button></li>)}
+                  {p.evidence.map((e) => <li key={e}><button onClick={() => show(e)} data-kind={evidenceKind(e)}>{shortLabel[e] ?? e}</button></li>)}
                 </ul>
               </article>
             ))}
@@ -520,7 +520,7 @@ export default function App() {
 
         <section id="work" className="band band-fog" data-ctx="work" data-title="Work">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">02 / 07</span><h2>Work</h2></div><p>From deep-learning research internships to shipping voice agents that answer real phone calls.</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">02 / 08</span><h2>Work</h2></div><p>From deep-learning research internships to shipping voice agents that answer real phone calls.</p></div>
           <ol className="jobs timeline">
             {jobs.map((j) => (
               <li key={j.id} className={`job reveal${j.current ? ' current' : ''}${viewing(j.id)}`} data-ctx={j.id} data-label={`${j.role} at ${j.org}`}>
@@ -553,7 +553,7 @@ export default function App() {
 
         <section id="projects" className="band band-paper" data-ctx="projects" data-title="Projects">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">03 / 07</span><h2>Projects</h2></div><p>{live ? 'The highlighted card is the one you\'re looking at. Nexus sees it too.' : 'Production systems, research and side projects. The big cards are the ones he is proudest of.'}</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">03 / 08</span><h2>Projects</h2></div><p>{live ? 'The highlighted card is the one you\'re looking at. Nexus sees it too.' : 'Production systems, research and side projects. The big cards are the ones he is proudest of.'}</p></div>
           <div className="bento">
             {featured.map((p, i) => (
               <article key={p.id} className={`card spot reveal area-${p.area}${i === 0 || p.id === 'proj-skin' ? ' wide' : ''}${viewing(p.id)}`} data-ctx={p.id} data-label={p.title} data-detail={p.text} style={{ ['--d' as string]: `${(i % 3) * 70}ms` }}>
@@ -608,7 +608,7 @@ export default function App() {
 
         <section id="opensource" className="band band-fog" data-ctx="opensource" data-title="Open source">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">04 / 07</span><h2>Open source</h2></div><p>Contributions merged into public projects that other developers rely on.</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">04 / 08</span><h2>Open source</h2></div><p>Contributions merged into public projects that other developers rely on.</p></div>
           <GitHubPulse />
           {openSource.map((o) => (
             <article key={o.id} className={`oss-card reveal${viewing(o.id)}`} data-ctx={o.id} data-label={`Open source: ${o.repo}`} data-detail={`${o.pr}, ${o.merged}: ${o.title}`}>
@@ -636,9 +636,50 @@ export default function App() {
           </div>
         </section>
 
+        <section id="leadership" className="band band-paper" data-ctx="leadership" data-title="Leadership">
+          <div className="wrap">
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">05 / 08</span><h2>Leadership &amp; community</h2></div><p>The other side of his work: roles his batch and his college trusted him with, and the people he teaches and builds for.</p></div>
+
+          <article className="lead-track reveal" aria-label="Leadership roles, 2022 to 2026">
+            <div className="lt-axis" aria-hidden="true">{[2022, 2023, 2024, 2025, 2026].map((y) => <span key={y} style={{ left: `${((y - 2022) / 4.5) * 100}%` }}>{y}</span>)}</div>
+            <ul className="lt-rows">
+              {leadership.map((r, i) => (
+                <li key={r.id} className={`lt-row${viewing(r.id)}`} data-ctx={r.id} data-label={`${r.title}, ${r.org}`} data-detail={`${r.span}: ${r.text}`} style={{ ['--d' as string]: `${i * 160}ms` }}>
+                  <div className="lt-label">
+                    <p className="lt-title">{r.title}</p>
+                    <p className="lt-org">{r.org}</p>
+                  </div>
+                  <div className="lt-lane">
+                    <span className="lt-bar" style={{ left: `${((r.from - 2022) / 4.5) * 100}%`, width: `${((r.to - r.from) / 4.5) * 100}%` }}><b>{r.span}</b></span>
+                  </div>
+                  <p className="lt-text">{r.text}</p>
+                </li>
+              ))}
+            </ul>
+          </article>
+
+          <div className="lead-grid">
+            {about.beyond.map((b, i) => (
+              <article key={b.id} className="ab-card lead-card reveal" data-ctx={b.id} data-label={b.title} data-detail={b.text} style={{ ['--d' as string]: `${i * 80}ms` }}>
+                <span className="beyond-ic" aria-hidden="true">{BEYOND_ICONS[i] ?? BEYOND_ICONS[0]}</span>
+                <p className="beyond-title">{b.title}<span>{b.when}</span></p>
+                <p className="beyond-text">{b.text}</p>
+              </article>
+            ))}
+            <article className="ab-card lead-card reveal" data-ctx="about-recognition" data-label="Competitions" style={{ ['--d' as string]: '160ms' }}>
+              <p className="ab-label">Competitions</p>
+              <div className="recog">
+                <div><b><CountUp value="#409" /></b><span className="recog-of">of 30,000+ teams</span><p>Amazon ML Challenge 2024 <em>top 1.4%</em></p></div>
+                <div><b>10th</b><span className="recog-of">of 100 teams</span><p>HackEye Hackathon 2022</p></div>
+              </div>
+            </article>
+          </div>
+          </div>
+        </section>
+
         <section id="research" className="band band-dark" data-ctx="research" data-title="Research">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">05 / 07</span><h2>Research</h2></div><p>Custom CNNs for medical imaging that beat larger pre-trained models.</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">06 / 08</span><h2>Research</h2></div><p>Custom CNNs for medical imaging that beat larger pre-trained models.</p></div>
           <div className="papers">
             {papers.map((p, i) => {
               const pub = p.status === 'Published';
@@ -685,7 +726,7 @@ export default function App() {
 
         <section id="about" className="band band-paper" data-ctx="about" data-title="About">
           <div className="wrap">
-          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">06 / 07</span><h2>About</h2></div><p>The person behind the work: how he got here, what he studied, and what he does beyond the job.</p></div>
+          <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">07 / 08</span><h2>About</h2></div><p>The person behind the work: how he got here, what he studied, and what he does beyond the job.</p></div>
           <div className="about-hero">
             <Portrait />
             <div className="about-intro reveal">
@@ -718,26 +759,6 @@ export default function App() {
               </ul>
             </article>
 
-            <article className="ab-card ab-recog reveal" data-ctx="about-recognition" data-label="Recognition" style={{ ['--d' as string]: '80ms' }}>
-              <p className="ab-label">Recognition</p>
-              <div className="recog">
-                <div><b><CountUp value="#409" /></b><span className="recog-of">of 30,000+ teams</span><p>Amazon ML Challenge 2024 <em>top 1.4%</em></p></div>
-                <div><b>10th</b><span className="recog-of">of 100 teams</span><p>HackEye Hackathon 2022</p></div>
-              </div>
-            </article>
-
-            <article className="ab-card ab-beyond reveal" data-ctx="about-beyond" data-label="Beyond work">
-              <p className="ab-label">Beyond work</p>
-              <ul className="beyond-list">
-                {about.beyond.map((b, i) => (
-                  <li key={b.id}>
-                    <span className="beyond-ic" aria-hidden="true">{BEYOND_ICONS[i] ?? BEYOND_ICONS[0]}</span>
-                    <div><p className="beyond-title">{b.title}<span>{b.when}</span></p><p className="beyond-text">{b.text}</p></div>
-                  </li>
-                ))}
-              </ul>
-            </article>
-
             <article className="ab-card ab-skills reveal" data-ctx="about-skills" data-label="Skills" style={{ ['--d' as string]: '80ms' }}>
               <p className="ab-label">Skills</p>
               <div className="skill-groups">
@@ -752,7 +773,7 @@ export default function App() {
 
         <section id="contact" className="band band-dark contact" data-ctx="contact" data-title="Contact">
           <div className="wrap">
-          <p className="eyebrow reveal"><span className="sec-idx">07 / 07</span> Contact</p>
+          <p className="eyebrow reveal"><span className="sec-idx">08 / 08</span> Contact</p>
           <h2 className="reveal">Have a call that an agent should take?</h2>
           <p className="contact-sub reveal">Hiring, a freelance project or a voice agent idea.</p>
           <ContactTime />
