@@ -132,6 +132,15 @@ export const jobs: Job[] = [
     text: 'Built an OTP verification system and a URL shortener in Python.',
     tags: ['Python'],
   },
+  {
+    id: 'job-cloudbird',
+    role: 'Subject Matter Expert (Mathematics) & QA Intern',
+    org: 'Cloudbird Digital, Noida',
+    when: 'May – Aug 2022',
+    type: 'Internship',
+    text: 'Wrote step-by-step solutions to mathematics questions and quality-checked them, to a daily target of 25 questions.',
+    tags: ['Mathematics', 'Quality assurance'],
+  },
 ];
 
 export type Project = {

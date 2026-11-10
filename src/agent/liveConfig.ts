@@ -9,7 +9,7 @@ import type { Behavior, FunctionDeclaration, LiveConnectConfig, Modality, Type }
 
 const OBJECT = 'OBJECT' as Type, STRING = 'STRING' as Type, NON_BLOCKING = 'NON_BLOCKING' as Behavior;
 import { about, journey, jobs, openSource, papers, person, pillars, projects, sections } from '../content';
-import { formatMonths, monthsOf } from '../experience';
+import { experienceSplit, formatMonths } from '../experience';
 
 export const LIVE_MODEL = 'gemini-3.8-live';
 /** Samples of each voice are in /voice-samples. Tested on this model: Kore, Sulafat, Achird, Aoede, Puck, Zephyr, Charon, Umbriel, Algieba, Leda. */
@@ -30,7 +30,7 @@ ${x}
 
 JOURNEY: ${y}.
 
-EXPERIENCE TOTAL: ${formatMonths(new Set(jobs.flatMap((j) => monthsOf(j.when))).size)} across ${jobs.length} roles, plus freelance AI and web work since 2021. If asked how much experience he has, say it in those words (e.g. "about 1 yr 8 mos across 8 roles, plus freelancing since 2021"); never round it up. (Overlapping internships are counted once; only explain that if asked.)
+EXPERIENCE: ${(() => { const s = experienceSplit(jobs); return `${formatMonths(s.fullTime)} full-time (Neurabit Solutions after his conversion, and Weya.ai) plus ${formatMonths(s.internship)} of internships, ${formatMonths(s.total)} in all across ${jobs.length} roles`; })()}, plus freelance AI and web work since 2021. If asked how much experience he has, give the full-time figure first, then the internships, in those words; never round up. (Overlapping internships are counted once; only explain that if asked.)
 
 WORK:
 ${j}

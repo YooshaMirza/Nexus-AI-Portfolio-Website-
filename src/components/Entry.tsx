@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { jobs, papers, person, projects } from '../content';
-import { monthsOf } from '../experience';
+import { experienceSplit } from '../experience';
 import { frameHooks } from './Stage';
 
 /**
@@ -11,7 +11,7 @@ import { frameHooks } from './Stage';
  */
 /** Nexus's silent first line, lit word by word like the site's live captions */
 const SAY = "Hi, I'm Nexus. Tap enter and I'll show you around.".split(' ');
-const MONTHS = new Set(jobs.flatMap((j) => monthsOf(j.when))).size;
+const MONTHS = experienceSplit(jobs).total;
 const HIGHLIGHTS = [
   jobs[0].org,
   'InstaBus',
