@@ -135,6 +135,15 @@ export const jobs: Job[] = [
     tags: ['Python'],
   },
   {
+    id: 'job-internshala',
+    role: 'Internshala Student Partner',
+    org: 'Internshala',
+    when: 'Sep – Nov 2022',
+    type: 'Internship',
+    text: "Remote student partner for Internshala: brought its internships and trainings to students, working on outreach and marketing.",
+    tags: ['Cross-cultural communication', 'Marketing strategy'],
+  },
+  {
     id: 'job-cloudbird',
     role: 'Subject Matter Expert (Mathematics) & QA Intern',
     org: 'Cloudbird Digital, Noida',
@@ -396,8 +405,8 @@ export const about = {
     { id: 'ach-hackeye', text: 'HackEye Hackathon 2022: 10th of 100 teams' },
   ],
   beyond: [
-    { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for about 10 clients across the USA, Korea and India, on Upwork, Fiverr and directly, with 5-star ratings.' },
-    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.', href: 'https://www.youtube.com/@yooshamirza', cta: 'Watch on YouTube' },
+    { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for about 10 clients across the USA, Korea and India, on Upwork, Fiverr and directly, with 5-star ratings.', stat: '~10', statLabel: 'clients worldwide', chips: ['USA', 'Korea', 'India', '5-star ratings'], href: 'https://www.upwork.com/freelancers/~01f371feafd31d5190', cta: 'Hire him on Upwork' },
+    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.', stat: `${Math.max(1, new Date().getFullYear() - 2022)}+ yrs`, statLabel: 'teaching on YouTube', chips: ['AI', 'ML', 'Web development', 'Competitive programming'], href: 'https://www.youtube.com/@yooshamirza', cta: 'Watch on YouTube' },
   ],
   skills: [
     { group: 'Generative AI', items: ['LLMs', 'RAG', 'MCP', 'Agentic AI', 'Voice agents', 'Transformers', 'Diffusion models'] },
@@ -487,14 +496,14 @@ export const journey = [
 
 /** Sections in page order — used by the nav, the context tracker and Nexus's show_on_page tool. */
 /**
- * Leadership & community (his own words, 11 Nov 2026). `from`/`to` are positions on the 2022 to 2026 college
- * timeline in years (2022.6 = Aug 2022), used to draw each role's bar to scale.
+ * Leadership & community (his own words, 11 Nov 2026). `from`/`to` are positions on his 4 college years
+ * (0 = start of 1st year, 4 = end of 4th year), so bars start at a year boundary and read at a glance.
  */
 export type LeadRole = { id: string; title: string; org: string; when: string; span: string; text: string; from: number; to: number };
 export const leadership: LeadRole[] = [
-  { id: 'lead-batchrep', title: 'Batch Representative', org: 'Bennett University', when: '2022 – 2026', span: 'All 4 years', text: 'Represented his batch for the whole of his B.Tech, every year from the first semester to the last.', from: 2022.6, to: 2026.4 },
-  { id: 'lead-placement', title: 'Placement Committee Member', org: 'Bennett University', when: '2024 – 2025', span: 'Full 3rd year', text: 'Part of the committee that runs campus placements with recruiting companies, for his entire third year.', from: 2024.6, to: 2025.4 },
-  { id: 'lead-codechef', title: 'Core Team, CodeChef BU', org: "The university's competitive programming club", when: '2022', span: '1st semester', text: 'Joined the core team of the coding club in his very first semester.', from: 2022.6, to: 2022.95 },
+  { id: 'lead-batchrep', title: 'Batch Representative', org: 'Bennett University', when: '2022 – 2026', span: 'All 4 years', text: 'Represented his batch for the whole of his B.Tech, every year from the first semester to the last.', from: 0, to: 4 },
+  { id: 'lead-placement', title: 'Placement Committee Member', org: 'Bennett University', when: '2024 – 2025', span: 'Full 3rd year', text: 'Part of the committee that runs campus placements with recruiting companies, for his entire third year.', from: 2, to: 3 },
+  { id: 'lead-codechef', title: 'Core Team, CodeChef BU', org: "The university's competitive programming club", when: '2022', span: '1st semester', text: 'Joined the core team of the coding club in his very first semester.', from: 0, to: 0.5 },
 ];
 
 export const sections = [

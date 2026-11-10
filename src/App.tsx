@@ -419,6 +419,16 @@ export default function App() {
     };
   }, [agent, tapStart]);
 
+  // leadership bars grow left to right once the track is properly on screen (not when it's just below the fold)
+  const leadTrack = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = leadTrack.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) { el.setAttribute('data-go', ''); return; }
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.setAttribute('data-go', ''); io.disconnect(); } }, { threshold: 0.45 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const viewing = (id: string) => (live && ctx.id === id ? ' is-viewing' : '');
   const featured = projects.filter((p) => p.featured);
   const archive = projects.filter((p) => !p.featured && (filter === 'all' || p.area === filter));
@@ -640,17 +650,17 @@ export default function App() {
           <div className="wrap">
           <div className="sec-head reveal"><div className="sec-title"><span className="sec-idx">05 / 08</span><h2>Leadership &amp; community</h2></div><p>The other side of his work: roles his batch and his college trusted him with, and the people he teaches and builds for.</p></div>
 
-          <article className="lead-track reveal" aria-label="Leadership roles, 2022 to 2026">
-            <div className="lt-axis" aria-hidden="true">{[2022, 2023, 2024, 2025, 2026].map((y) => <span key={y} style={{ left: `${((y - 2022) / 4.5) * 100}%` }}>{y}</span>)}</div>
+          <article ref={leadTrack} className="lead-track reveal" aria-label="Leadership roles across his four college years, 2022 to 2026">
+            <div className="lt-axis" aria-hidden="true">{['1st year', '2nd year', '3rd year', '4th year'].map((y, i) => <span key={y}><b>{y}</b>{2022 + i}</span>)}</div>
             <ul className="lt-rows">
               {leadership.map((r, i) => (
-                <li key={r.id} className={`lt-row${viewing(r.id)}`} data-ctx={r.id} data-label={`${r.title}, ${r.org}`} data-detail={`${r.span}: ${r.text}`} style={{ ['--d' as string]: `${i * 160}ms` }}>
+                <li key={r.id} className={`lt-row${viewing(r.id)}`} data-ctx={r.id} data-label={`${r.title}, ${r.org}`} data-detail={`${r.span}: ${r.text}`} style={{ ['--d' as string]: `${300 + i * 350}ms` }}>
                   <div className="lt-label">
                     <p className="lt-title">{r.title}</p>
                     <p className="lt-org">{r.org}</p>
                   </div>
                   <div className="lt-lane">
-                    <span className="lt-bar" style={{ left: `${((r.from - 2022) / 4.5) * 100}%`, width: `${((r.to - r.from) / 4.5) * 100}%` }}><b>{r.span}</b></span>
+                    <span className="lt-bar" style={{ left: `${(r.from / 4) * 100}%`, width: `${((r.to - r.from) / 4) * 100}%` }}><b>{r.span}</b></span>
                   </div>
                   <p className="lt-text">{r.text}</p>
                 </li>
@@ -661,10 +671,14 @@ export default function App() {
           <div className="lead-grid">
             {about.beyond.map((b, i) => (
               <article key={b.id} className="ab-card lead-card reveal" data-ctx={b.id} data-label={b.title} data-detail={b.text} style={{ ['--d' as string]: `${i * 80}ms` }}>
-                <span className="beyond-ic" aria-hidden="true">{BEYOND_ICONS[i] ?? BEYOND_ICONS[0]}</span>
-                <p className="beyond-title">{b.title}<span>{b.when}</span></p>
+                <div className="lc-head">
+                  <span className="beyond-ic" aria-hidden="true">{BEYOND_ICONS[i] ?? BEYOND_ICONS[0]}</span>
+                  <p className="beyond-title">{b.title}<span>{b.when}</span></p>
+                </div>
+                {'stat' in b && <p className="lc-stat"><b>{b.stat}</b><span>{b.statLabel}</span></p>}
+                {'chips' in b && <ul className="lc-chips">{b.chips.map((c) => <li key={c}>{c}</li>)}</ul>}
                 <p className="beyond-text">{b.text}</p>
-                {'href' in b && b.href && <a className="lead-link" href={b.href} target="_blank" rel="noreferrer">{b.cta} ↗</a>}
+                {'href' in b && <a className="btn lc-btn" href={b.href} target="_blank" rel="noreferrer">{b.cta} <span aria-hidden="true">↗</span></a>}
               </article>
             ))}
             <article className="ab-card lead-card reveal" data-ctx="about-recognition" data-label="Competitions" style={{ ['--d' as string]: '160ms' }}>

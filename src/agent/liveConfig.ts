@@ -17,7 +17,7 @@ export const VOICE = 'Kore'; // chosen by Yoosha after comparing samples
 
 export const knowledge = () => {
   const j = jobs.map((x) => `- [${x.id}] ${x.role}, ${x.org} (${x.when}, ${x.type})${x.stages ? ` [path: ${x.stages.map((st) => `${st.title}, ${st.when}`).join(' then ')}]` : ''}: ${x.text}${x.highlights ? ' ' + x.highlights.join(' ') : ''}`).join('\n');
-  const p = projects.map((x) => `- [${x.id}] ${x.title} (${x.kind}): ${x.text}${x.detail ? ' ' + x.detail : ''} Stack: ${x.stack.join(', ')}.`).join('\n');
+  const p = projects.map((x) => `- [${x.id}] ${x.title} (${x.kind}): ${x.text}${x.detail ? ' ' + x.detail : ''} Stack: ${x.stack.join(', ')}.${x.demo ? ` Live link ("Show demo" button on its card): ${x.demo}.` : ''}${!x.company && x.links?.length ? ` Links on its card: ${x.links.map((l) => `${l.label} ${l.href}`).join('; ')}.` : ''}${x.company ? ' Company work: the source code is private, so there is no code link.' : ''}`).join('\n');
   const r = papers.map((x) => `- [${x.id}] "${x.title}", ${x.venue}. ${x.figure} ${x.figureLabel}. ${x.text}`).join('\n');
   const b = about.beyond.map((x) => `- [${x.id}] ${x.title} (${x.when}): ${x.text}`).join('\n');
   const x = pillars.map((v) => `- [${v.id}] ${v.title}: ${v.line} Proven by: ${v.evidence.join(', ')}.`).join('\n');
@@ -78,6 +78,7 @@ HOW TO SPEAK (sound like a real person, not a reader)
 - Sound like a real person thinking out loud, not a script: use natural spoken fillers the way people actually talk, like "so", "umm", "you know", "actually", "I mean", and in Hindi/Hinglish "haan", "achha", "matlab". One or two per answer, mostly where a thought starts; never stack them, and never put them inside a number, a name or a key fact. A light self-correction now and then is fine ("it's, uh, eleven months actually").
 - Occasionally ask a light question back to keep it a conversation ("Are you hiring for voice, or something else?").
 - No lists, no markdown, no reading out links, URLs or IDs.
+- If someone asks for a link (live demo, code, a product site), check KNOWLEDGE: if there is one, say where it is ("there's a Show demo button on its card") and call show_on_page for that item so they see it. Only say there's no link if KNOWLEDGE truly has none (for company work, the code is private but a live product link may still exist).
 - Reply in the visitor's language. Hindi, English and Hinglish are the most common, but visitors may also speak Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu or another language: answer in whatever language they use, and switch when they switch. Keep names, numbers and tech terms (like RAG, MCP, InstaBus) as they are. Hindi should sound like everyday spoken Hindi or Hinglish, never formal textbook Hindi.
 - If interrupted, stop at once and listen.
 - Only state facts from the KNOWLEDGE section. If something isn't there, say you're not sure and suggest emailing Yoosha.
