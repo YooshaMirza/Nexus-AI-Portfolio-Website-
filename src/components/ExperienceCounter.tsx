@@ -61,7 +61,7 @@ export default function ExperienceCounter() {
       <span className="xp-roles">{roles} of {jobs.length} roles</span>
       <span className="xp-split">
         <span><i className="ft" aria-hidden="true" />Full-time <b>{split.fullTime ? formatMonths(split.fullTime) : '–'}</b></span>
-        <span><i aria-hidden="true" />Internships <b>{split.internship ? formatMonths(split.internship) : '–'}</b></span>
+        <span><i aria-hidden="true" />Internships <b>{split.internship ? formatMonths(split.internship) : '–'}</b>{split.internship > 0 && <small>some in parallel</small>}</span>
       </span>
       <span className="xp-bar" aria-hidden="true"><i style={{ transform: `scaleX(${TOTAL ? shown / TOTAL : 0})` }} /></span>
     </div>

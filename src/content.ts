@@ -32,6 +32,8 @@ export type Job = {
   type: string;
   /** company logo in /public/logos (checked by Yoosha) */
   logo?: string;
+  /** the logo is a wide wordmark (shown in a rounded rectangle, not a circle) */
+  logoWide?: boolean;
   /** 2-4 concrete bullet points */
   highlights?: string[];
   /** steps inside one company, e.g. internship converted to full-time */
@@ -136,6 +138,8 @@ export const jobs: Job[] = [
     id: 'job-cloudbird',
     role: 'Subject Matter Expert (Mathematics) & QA Intern',
     org: 'Cloudbird Digital, Noida',
+    logo: '/logos/cloudbird.png',
+    logoWide: true,
     when: 'May – Aug 2022',
     type: 'Internship',
     text: 'Wrote step-by-step solutions to mathematics questions and quality-checked them, to a daily target of 25 questions.',
@@ -392,8 +396,8 @@ export const about = {
     { id: 'ach-hackeye', text: 'HackEye Hackathon 2022: 10th of 100 teams' },
   ],
   beyond: [
-    { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for clients on Fiverr, Upwork and directly, with 5-star ratings.' },
-    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.' },
+    { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for about 10 clients across the USA, Korea and India, on Upwork, Fiverr and directly, with 5-star ratings.' },
+    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.', href: 'https://www.youtube.com/@yooshamirza', cta: 'Watch on YouTube' },
   ],
   skills: [
     { group: 'Generative AI', items: ['LLMs', 'RAG', 'MCP', 'Agentic AI', 'Voice agents', 'Transformers', 'Diffusion models'] },

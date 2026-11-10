@@ -44,12 +44,14 @@ export function roleSplit(j: Role, now = new Date()): Split {
 }
 
 /**
- * Unique months of full-time work and of internships across roles. Full-time grows by itself every month
- * ("Sep 2026 – now"); internships are fixed. A month that has both counts as full-time only.
+ * Full-time months (unique, grows by itself every month: "Sep 2026 – now") and internship months (each internship
+ * counted in full, parallel ones included; fixed).
  */
 export function experienceSplit(roles: Role[], now = new Date()) {
-  const ft = new Set<number>(), it = new Set<number>();
-  for (const j of roles) { const s = roleSplit(j, now); s.fullTime.forEach((m) => ft.add(m)); s.internship.forEach((m) => it.add(m)); }
-  ft.forEach((m) => it.delete(m));
-  return { fullTime: ft.size, internship: it.size, total: ft.size + it.size };
+  const ft = new Set<number>();
+  let internship = 0;
+  // full-time: unique calendar months. Internships: each one's months are added up, so two internships done
+  // in parallel both count (Yoosha's call, 11 Nov 2026). The page says "some in parallel" next to it.
+  for (const j of roles) { const s = roleSplit(j, now); s.fullTime.forEach((m) => ft.add(m)); internship += s.internship.length; }
+  return { fullTime: ft.size, internship, total: ft.size + internship };
 }
