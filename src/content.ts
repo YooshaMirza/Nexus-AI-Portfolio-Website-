@@ -406,7 +406,7 @@ export const about = {
   ],
   beyond: [
     { id: 'beyond-freelance', title: 'Freelance AI and web developer', when: 'Since 2021', text: 'AI/ML and web projects for about 10 clients across the USA, Korea and India, on Upwork, Fiverr and directly, with 5-star ratings.', stat: '~10', statLabel: 'clients worldwide', chips: ['USA', 'Korea', 'India', '5-star ratings'], href: 'https://www.upwork.com/freelancers/~01f371feafd31d5190', cta: 'Hire him on Upwork' },
-    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming.', stat: `${Math.max(1, new Date().getFullYear() - 2022)}+ yrs`, statLabel: 'teaching on YouTube', chips: ['AI', 'ML', 'Web development', 'Competitive programming'], href: 'https://www.youtube.com/@yooshamirza', cta: 'Watch on YouTube' },
+    { id: 'beyond-youtube', title: 'YouTube educator', when: 'Since 2022', text: 'Teaches AI, ML, web development and competitive programming: 19 videos with over 2 lakh (212,000+) views.', stat: '2 lakh+', statLabel: 'views on his videos', chips: ['AI', 'ML', 'Web development', 'Competitive programming'], href: 'https://www.youtube.com/@yooshamirza', cta: 'Watch on YouTube' },
   ],
   skills: [
     { group: 'Generative AI', items: ['LLMs', 'RAG', 'MCP', 'Agentic AI', 'Voice agents', 'Transformers', 'Diffusion models'] },

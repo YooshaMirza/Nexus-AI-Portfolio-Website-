@@ -60,8 +60,8 @@ export const TOUR: TourStop[] = [
   },
   {
     target: 'leadership', label: 'Leadership',
-    line: 'Beyond code: batch representative for all four years, placement committee member in his third year, CodeChef BU core team, and a YouTube educator since 2022.',
-    say: 'Aur sirf code nahi: chaar saal batch representative, third year mein placement committee, CodeChef BU core team, aur 2022 se YouTube pe padhata bhi hai.',
+    line: 'Beyond code: batch representative for all four years, placement committee member in his third year, CodeChef BU core team, and a YouTube educator since 2022 with over 2 lakh views.',
+    say: 'Aur sirf code nahi: chaar saal batch representative, third year mein placement committee, CodeChef BU core team, aur 2022 se YouTube pe padhata bhi hai, 2 lakh se zyada views ke saath.',
   },
   {
     target: 'contact', label: 'Work with him',
