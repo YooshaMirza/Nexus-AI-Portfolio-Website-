@@ -16,6 +16,7 @@ import ThemeHint from './components/ThemeHint';
 import Entry from './components/Entry';
 import VisitCount from './components/VisitCount';
 import { ContactTime, CopyEmail } from './components/ContactBits';
+import Coursework from './components/Coursework';
 import DevLog from './components/DevLog';
 import Tour from './components/Tour';
 import GitHubPulse from './components/GitHubPulse';
@@ -773,6 +774,8 @@ export default function App() {
                 ))}
               </ul>
             </article>
+
+            <Coursework />
 
             <article className="ab-card ab-skills reveal" data-ctx="about-skills" data-label="Skills" style={{ ['--d' as string]: '80ms' }}>
               <p className="ab-label">Skills</p>

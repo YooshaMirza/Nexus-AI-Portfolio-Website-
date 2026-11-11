@@ -508,6 +508,30 @@ export const leadership: LeadRole[] = [
   { id: 'lead-codechef', title: 'Core Team, CodeChef BU', org: "The university's competitive programming club", when: '2022', span: '1st semester', text: 'Joined the core team of the coding club in his very first semester.', from: 0, to: 0.5 },
 ];
 
+/**
+ * Coursework (11 Nov 2026): the 7 of his 17 Coursera courses closest to his work, from his share links.
+ * `verify` = Coursera verify code (coursera.org/verify/<code>); `date` = completion date from the certificate.
+ * Images: public/certs/<id>-thumb.webp and <id>.webp (cropped from Coursera's certificate image).
+ */
+export type Course = { id: string; title: string; issuer: string; date: string; verify: string };
+export const coursework: { area: string; issuer: string; courses: Course[] }[] = [
+  { area: 'Deep learning', issuer: 'DeepLearning.AI', courses: [
+    { id: 'dl-neural-networks', title: 'Neural Networks and Deep Learning', issuer: 'DeepLearning.AI', date: '2025-04-27', verify: 'NOATLYIQON7T' },
+    { id: 'dl-improving-dnn', title: 'Improving Deep Neural Networks: Hyperparameter Tuning, Regularization and Optimization', issuer: 'DeepLearning.AI', date: '2024-11-21', verify: 'GV8X1YDLUG40' },
+    { id: 'dl-nlp-classification', title: 'Natural Language Processing with Classification and Vector Spaces', issuer: 'DeepLearning.AI', date: '2024-11-21', verify: 'M6ZPLV24EBDU' },
+  ] },
+  { area: 'Machine learning', issuer: 'IBM', courses: [
+    { id: 'ibm-supervised-ml', title: 'Supervised Machine Learning: Classification', issuer: 'IBM', date: '2023-10-17', verify: 'QD3474JJP4AM' },
+    { id: 'ibm-unsupervised-ml', title: 'Unsupervised Machine Learning', issuer: 'IBM', date: '2023-10-16', verify: 'P3JALYAW8A2S' },
+    { id: 'ibm-eda', title: 'Exploratory Data Analysis for Machine Learning', issuer: 'IBM', date: '2023-10-08', verify: 'KCPNXRJD6FUX' },
+  ] },
+  { area: 'Reinforcement learning', issuer: 'University of Alberta', courses: [
+    { id: 'ua-sample-based-rl', title: 'Sample-based Learning Methods', issuer: 'University of Alberta', date: '2024-02-18', verify: '8RGGFQHG7YMF' },
+  ] },
+];
+export const courseworkTotal = 17;
+export const courseworkMore = 'networking, operating systems, design thinking, digital business and IP law';
+
 export const sections = [
   { id: 'intro', label: 'Intro' },
   { id: 'expertise', label: 'Expertise' },

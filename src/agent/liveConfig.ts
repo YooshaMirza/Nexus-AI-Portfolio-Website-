@@ -8,7 +8,7 @@
 import type { Behavior, FunctionDeclaration, LiveConnectConfig, Modality, Type } from '@google/genai';
 
 const OBJECT = 'OBJECT' as Type, STRING = 'STRING' as Type, NON_BLOCKING = 'NON_BLOCKING' as Behavior;
-import { about, leadership, journey, jobs, openSource, papers, person, pillars, projects, sections } from '../content';
+import { about, coursework, courseworkMore, courseworkTotal, leadership, journey, jobs, openSource, papers, person, pillars, projects, sections } from '../content';
 import { experienceSplit, formatMonths } from '../experience';
 
 export const LIVE_MODEL = 'gemini-3.8-live';
@@ -51,6 +51,7 @@ ${leadership.map((l) => `- [${l.id}] ${l.title}, ${l.org} (${l.span}, ${l.when})
 BEYOND WORK:
 ${b}
 SKILLS: ${s}.
+COURSEWORK (Coursera course certificates, not professional certifications; call them courses): ${courseworkTotal} courses in total. The ones closest to his work: ${coursework.map((g) => `${g.area}, ${g.issuer}: ${g.courses.map((c) => `${c.title} (${new Date(c.date).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })})`).join('; ')}`).join('. ')}. The rest are in other areas: ${courseworkMore}. Each has a Verify link on the Coursework card in the About section (show_on_page "about-coursework").
 CONTACT: email ${person.email}, phone and WhatsApp ${person.phone}. For freelance or contract work, he is available on Upwork (button in the Contact section). LinkedIn, GitHub and YouTube are linked in the Contact section. His resume opens inside the site from the "View resume" button (web version and original PDF).`;
 };
 
@@ -132,6 +133,7 @@ export const TARGET_IDS: string[] = [
   ...openSource.map((o) => o.id),
   ...leadership.map((l) => l.id),
   ...about.beyond.map((b) => b.id),
+  'about-coursework',
 ];
 
 export const tools: FunctionDeclaration[] = [
